@@ -30,8 +30,14 @@ class Translation
     #[Assert\NotBlank]
     private string $domain = 'messages';
 
+    #[ORM\Column(name: "frontend_domains", type: "simple_array", nullable: true)]
+    private array $frontendDomains = [];
+
     #[ORM\Column]
     private bool $active = true;
+
+    #[ORM\Column]
+    private bool $onlyFrontend = false;
 
     #[ORM\Column(name: "trans_values", type: "json", nullable: true)]
     private array $values;
@@ -190,5 +196,25 @@ class Translation
         if (!$this->updatedLastChanged) {
             $this->lastChanged = TranslationLastEdit::LOCAL;
         }
+    }
+
+    public function setFrontendDomains(array $frontendDomains): void
+    {
+        $this->frontendDomains = $frontendDomains;
+    }
+
+    public function getFrontendDomains(): array
+    {
+        return $this->frontendDomains;
+    }
+
+    public function setOnlyFrontend(bool $onlyFrontend): void
+    {
+        $this->onlyFrontend = $onlyFrontend;
+    }
+
+    public function isOnlyFrontend(): bool
+    {
+        return $this->onlyFrontend;
     }
 }

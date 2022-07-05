@@ -15,6 +15,7 @@ use ManuelAguirre\Bundle\TranslationBundle\Model\TranslationLastEdit;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Serializer\Normalizer\ContextAwareDenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
+use function dump;
 
 /**
  * @author Manuel Aguirre <programador.manuel@gmail.com>
@@ -33,6 +34,8 @@ class TranslationNormalizer implements ContextAwareNormalizerInterface, ContextA
             'active' => $object->getActive(),
             'code' => $object->getCode(),
             'domain' => $object->getDomain(),
+            'frontendDomains' => $object->getFrontendDomains(),
+            'onlyFrontend' => $object->isOnlyFrontend(),
             'values' => $object->getValues(),
             'createdAt' => $object->getCreatedAt(),
             'lastChanged' => $object->getLastChanged(),

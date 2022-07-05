@@ -6,6 +6,10 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 use ManuelAguirre\Bundle\TranslationBundle\TranslationRepository as RepositoryInterface;
+use function array_filter;
+use function Doctrine\ORM\QueryBuilder;
+use function explode;
+use function is_iterable;
 
 /**
  * TranslationRepository
@@ -20,12 +24,16 @@ class TranslationRepository extends ServiceEntityRepository implements Repositor
         parent::__construct($registry, Translation::class);
     }
 
-    public function getAllQueryBuilder($search = null, $domain = null, $inactives = false)
-    {
+    public function getAllQueryBuilder(
+        $search = null,
+        $domain = null,
+        $frontendDomains = null,
+        $inactive = false
+    ) {
         $query = $this->createQueryBuilder('translation')
             ->orderBy('translation.domain,translation.code, translation.active');
 
-        if ($inactives) {
+        if ($inactive) {
             $query->andWhere('translation.active = false');
         }
 
@@ -41,6 +49,18 @@ class TranslationRepository extends ServiceEntityRepository implements Repositor
         if (null !== $domain) {
             $query->andWhere('translation.domain IN (:domain)')
                 ->setParameter('domain', $domain);
+        }
+
+        if (is_iterable($frontendDomains)) {
+            $conditions = [];
+
+            foreach ($frontendDomains as $index => $fDomain) {
+                $param = "f_domain_" . $index;
+                $query->setParameter($param, '%' . $fDomain . '%');
+                $conditions[] = "translation.frontendDomains LIKE :{$param}";
+            }
+
+            $query->andWhere($query->expr()->orX(...$conditions));
         }
 
         return $query;
@@ -112,6 +132,25 @@ class TranslationRepository extends ServiceEntityRepository implements Repositor
         }
 
         return $domains;
+    }
+
+    public function getExistentFrontendDomains()
+    {
+        $result = $this->createQueryBuilder('t')
+            ->select('t.frontendDomains domain')
+            ->addGroupBy('t.frontendDomains')
+            ->getQuery()
+            ->getScalarResult();
+
+        $domains = [];
+
+        foreach ($result as ['domain' => $item]) {
+            foreach (explode(',', $item) as $domain) {
+                $domains[$domain] = $domain;
+            }
+        }
+
+        return array_filter($domains);
     }
 
     public function inactiveByDomainAndCodes($domain, $codes)

@@ -46,6 +46,7 @@ class TranslationController extends AbstractController
         return $this->render('@ManuelTranslation/Default/index.html.twig', array(
             'locales' => $this->parameters->get('manuel_translation.locales'),
             'domains' => $repository->getExistentDomains(),
+            'frontend_domains' => $repository->getExistentFrontendDomains(),
         ));
     }
 

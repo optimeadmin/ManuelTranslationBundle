@@ -18,6 +18,7 @@ const getTranslations = (apiUrl, page, itemsPerPage, filters) => {
         params: {
             search: filters?.search || '',
             domains: (filters?.domains || []).filter(d => d.length > 0),
+            frontendDomains: (filters?.frontendDomains || []).filter(d => d.length > 0),
             page: page,
             perPage: itemsPerPage,
         }

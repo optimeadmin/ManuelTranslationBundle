@@ -50,6 +50,7 @@ class ApiController extends AbstractController
         $query = $this->translationRepository->getAllQueryBuilder(
             $request->get('search'),
             $request->get('domains'),
+            $request->get('frontendDomains'),
             $request->get('inactive') && $request->get('inactive') !== 'false'
         );
 

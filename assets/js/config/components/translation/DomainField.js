@@ -1,8 +1,10 @@
-import React, {useId} from "react";
-import {Dropdown, Form} from "react-bootstrap";
+import React, { useContext, useId } from "react";
+import { Dropdown, Form } from "react-bootstrap";
+import GlobalsContext from "../../context/GlobalsContext";
 
-const DomainField = ({domains, value, selectDomain}) => {
-    const id = useId();
+const DomainField = ({ value, selectDomain }) => {
+    const id = useId()
+    const {domains} = useContext(GlobalsContext)
 
     const handleDomainChange = (e) => selectDomain(e.target.value);
     const handleNewDomainChange = (e) => selectDomain(e.target.value?.trim());
