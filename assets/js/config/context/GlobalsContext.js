@@ -7,6 +7,7 @@ const GlobalsContext = createContext({
     locales: [],
     booleanLabel: (value) => null,
     addDomain: (domain) => null,
+    addFrontendDomain: (domain) => null,
 });
 
 const itemsPerPage = 50;

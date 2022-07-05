@@ -1,14 +1,17 @@
-import {useCallback, useContext, useEffect} from "react";
-import GlobalsContext, {itemsPerPage} from "../context/GlobalsContext";
+import { useCallback, useContext, useEffect } from "react";
+import GlobalsContext, { itemsPerPage } from "../context/GlobalsContext";
 import axios from "axios";
-import {v4 as uuid} from "uuid";
-import {useQuery, useQueryClient} from "react-query";
+import { v4 as uuid } from "uuid";
+import { useQuery, useQueryClient } from "react-query"
+import { getItem } from '../storage/domains'
 
 const createNewItem = () => ({
     id: null,
     uuid: uuid(),
     code: '',
-    domain: 'messages',
+    domain: getItem('translations_default_domain', 'messages'),
+    frontendDomains: getItem('translations_default_frontend_domains', []),
+    onlyFrontend: false,
     active: true,
     values: {},
 });
@@ -22,16 +25,16 @@ const getTranslations = (apiUrl, page, itemsPerPage, filters) => {
             page: page,
             perPage: itemsPerPage,
         }
-    }).then(({data, headers}) => {
+    }).then(({ data, headers }) => {
         return {
-            items: data.map(item => ({...item, uuid: item.id})),
+            items: data.map(item => ({ ...item, uuid: item.id })),
             totalCount: headers['x-count'],
         };
     })
 }
 
 const useTranslationsQuery = (filters, page) => {
-    const {paths: {api: apiUrl}} = useContext(GlobalsContext);
+    const { paths: { api: apiUrl } } = useContext(GlobalsContext);
     const queryClient = useQueryClient()
 
     const queryKey = ["translations", "list", apiUrl, page, itemsPerPage, filters];
@@ -43,14 +46,14 @@ const useTranslationsQuery = (filters, page) => {
             keepPreviousData: true,
         })
 
-    const {isLoading, isFetching, data: {items: translations = [], totalCount = 0} = {}} = translationsQuery
+    const { isLoading, isFetching, data: { items: translations = [], totalCount = 0 } = {} } = translationsQuery
 
     useEffect(() => {
-        queryClient.removeQueries(["translations", "list"], {active: false})
+        queryClient.removeQueries(["translations", "list"], { active: false })
     }, [filters])
 
     const addEmpty = useCallback(() => {
-        queryClient.setQueryData(queryKey, ({items, totalCount}) => {
+        queryClient.setQueryData(queryKey, ({ items, totalCount }) => {
             return {
                 items: [createNewItem(), ...items],
                 totalCount,
@@ -59,9 +62,9 @@ const useTranslationsQuery = (filters, page) => {
     }, [queryClient, queryKey])
 
     const removeEmpty = useCallback((item) => {
-        queryClient.setQueryData(queryKey, ({items, totalCount}) => {
+        queryClient.setQueryData(queryKey, ({ items, totalCount }) => {
             return {
-                items: items.filter(({uuid}) => uuid !== item.uuid),
+                items: items.filter(({ uuid }) => uuid !== item.uuid),
                 totalCount,
             }
         })

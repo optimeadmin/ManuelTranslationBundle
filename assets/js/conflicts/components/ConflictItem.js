@@ -1,7 +1,7 @@
-import React, {useId} from "react";
-import {Card, Form} from "react-bootstrap";
+import React, { useId } from "react";
+import { Card, Form } from "react-bootstrap";
 
-const ConflictItem = ({item, onSelectionChange, currentSelectType}) => {
+const ConflictItem = ({ item, onSelectionChange, currentSelectType }) => {
     const selectFileTarget = () => onSelectionChange("file");
     const selectDatabaseTarget = () => onSelectionChange("database");
 
@@ -22,30 +22,38 @@ const ConflictItem = ({item, onSelectionChange, currentSelectType}) => {
                         onSelect={selectFileTarget}
                         itemId={item.hash}
                         type="file"
-                        values={item.file.values}
-                    />
+                        values={item.file.values}>
+                        <FrontendInfo
+                            domains={item.file.frontendDomains}
+                            onlyFrontend={item.file.onlyFrontend}
+                        />
+                    </ValuesInfo>
                     <ValuesInfo
                         selected={currentSelectType === 'database'}
                         onSelect={selectDatabaseTarget}
                         itemId={item.hash}
                         type="database"
-                        values={item.database.values}
-                    />
+                        values={item.database.values}>
+                        <FrontendInfo
+                            domains={item.database.frontendDomains}
+                            onlyFrontend={item.database.onlyFrontend}
+                        />
+                    </ValuesInfo>
                 </div>
             </Card.Body>
         </Card>
     )
 }
 
-const ValuesInfo = ({itemId, type, values, selected, onSelect}) => {
+const ValuesInfo = ({ itemId, type, values, selected, onSelect, children }) => {
     const valueItems = Object.entries(values || {});
     const id = useId();
 
     const handleCheckChange = () => onSelect();
 
     return (
-        <div className="border rounded p-2 col">
-            <div className="d-flex border-bottom text-secondary text-opacity-50 mb-2 text-capitalize">
+        <div className={`border rounded p-2 col ${selected ? '' : 'text-opacity-75'}`}>
+            <div className="d-flex border-bottom text-secondary mb-2 text-capitalize">
                 <div>{type} Values</div>
                 <Form.Check
                     type="radio"
@@ -57,15 +65,36 @@ const ValuesInfo = ({itemId, type, values, selected, onSelect}) => {
                     label={`Use ${type}`}
                 />
             </div>
-            <div>
-                {valueItems.map(([locale, value]) => (
-                    <div className="row mb-1" key={locale}>
-                        <div className="col-sm-1 text-secondary text-opacity-75 text-end">
-                            {locale.toUpperCase()}
+
+            <div className={`${selected ? '' : 'opacity-50'}`}>
+                <div className="border-bottom pb-2">
+                    {valueItems.map(([locale, value]) => (
+                        <div className="row mb-1" key={locale}>
+                            <div className="col-sm-1 text-secondary text-opacity-75 text-end">
+                                {locale.toUpperCase()}
+                            </div>
+                            <div className="col-sm-11">{value}</div>
                         </div>
-                        <div className="col-sm-11">{value}</div>
-                    </div>
-                ))}
+                    ))}
+                </div>
+
+                {children}
+
+            </div>
+        </div>
+    )
+}
+
+
+const FrontendInfo = ({ domains, onlyFrontend }) => {
+
+    return (
+        <div className="mt-2">
+            <div>
+                <b>Frontend Domains: </b> {domains?.join(', ') ?? 'NONE'}
+            </div>
+            <div>
+                <b>Only Frontend: </b> {onlyFrontend ? 'Yes' : 'No'}
             </div>
         </div>
     )

@@ -49,7 +49,7 @@ class SyncController extends AbstractController
         SerializerInterface $serializer,
         Request $request,
     ): Response {
-        $result = $synchronizator->sync($request->query->getBoolean('forced'));
+        $result = $synchronizator->sync($request->query->getBoolean('forced', true));
 
         return $this->render('@ManuelTranslation/Sync/resolve_conflicts.html.twig', array(
             'news' => $result->getNews(),

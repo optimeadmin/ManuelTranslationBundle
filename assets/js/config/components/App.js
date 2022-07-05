@@ -45,7 +45,7 @@ export default function App() {
                     >
                         {translations.map(translation => (
                             <Item
-                                key={translation.id}
+                                key={translation.uuid}
                                 translation={translation}
                                 removeEmptyItem={translationActions.removeEmptyItem}
                             />

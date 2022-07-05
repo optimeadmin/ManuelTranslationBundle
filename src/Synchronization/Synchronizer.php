@@ -16,6 +16,7 @@ use ManuelAguirre\Bundle\TranslationBundle\Entity\Translation;
 use ManuelAguirre\Bundle\TranslationBundle\Entity\TranslationRepository;
 use ManuelAguirre\Bundle\TranslationBundle\Model\TranslationLastEdit;
 use Symfony\Component\Filesystem\Filesystem;
+use function sort;
 
 /**
  * @autor Manuel Aguirre <programador.manuel@gmail.com>
@@ -61,6 +62,8 @@ class Synchronizer
             $export['translations'][$translation['domain']][$translation['code']] = [
                 'hash' => $translation['hash'],
                 'active' => $translation['active'],
+                'frontend_domains' => $translation['frontendDomains'],
+                'only_frontend' => $translation['onlyFrontend'],
             ];
 
             foreach ($translation['values'] as $locale => $value) {
@@ -82,7 +85,7 @@ class Synchronizer
         return true;
     }
 
-    public function sync(bool $forced = false): SyncResult
+    public function sync(bool $forced = true): SyncResult
     {
         list($fileHash, $fileTranslations) = $this->createTranslationsFromFile();
         $localHash = $this->getLocalHash();
@@ -103,6 +106,8 @@ class Synchronizer
     public function updateTranslation(
         Translation $translation,
         iterable $values,
+        array $frontendDomains,
+        bool $onlyFrontend,
         string $hash,
         bool $active,
         TranslationLastEdit $lastChanged
@@ -111,6 +116,8 @@ class Synchronizer
             $translation->setValue($locale, $value);
         }
 
+        $translation->setFrontendDomains($frontendDomains);
+        $translation->setOnlyFrontend($onlyFrontend);
         $translation->setHash($hash);
         $translation->setActive($active);
         $translation->setLastChanged($lastChanged);
@@ -165,6 +172,8 @@ class Synchronizer
                         $this->updateTranslation(
                             $dbT,
                             $t->getValues(),
+                            $t->getFrontendDomains(),
+                            $t->isOnlyFrontend(),
                             $t->getHash(),
                             $t->getActive(),
                             $dbT->getLastChanged()
@@ -193,7 +202,9 @@ class Synchronizer
 
     protected function withOutConflicts(Translation $file, Translation $database): bool
     {
-        if ($file->getActive() != $database->getActive()) {
+        if ($file->getActive() !== $database->getActive()) {
+            return false;
+        } elseif ($file->isOnlyFrontend() !== $database->isOnlyFrontend()) {
             return false;
         } elseif ($file->getValues() != $database->getValues()) {
             // Si los valores son distintos, debemos verificar cada locale, para determinar si son iguales o no,
@@ -211,8 +222,18 @@ class Synchronizer
                     }
                 }
             }
+        }
 
-            return true;
+        if ($file->getFrontendDomains() !== $database->getFrontendDomains()) {
+            $fileDomains = $file->getFrontendDomains();
+            $dbDomains = $database->getFrontendDomains();
+
+            sort($fileDomains);
+            sort($dbDomains);
+
+            if ($fileDomains !== $dbDomains) {
+                return false;
+            }
         }
 
         return true;
@@ -246,6 +267,8 @@ class Synchronizer
                 $t->setValues($info['values']);
                 $t->setHash($info['hash']);
                 $t->setActive($info['active']);
+                $t->setFrontendDomains($info['frontend_domains']);
+                $t->setOnlyFrontend($info['only_frontend']);
                 $t->setLastChanged(TranslationLastEdit::FILE);
             }
         }

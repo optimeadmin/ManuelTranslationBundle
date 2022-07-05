@@ -87,23 +87,25 @@ const Filter = React.memo(({ onSubmit }) => {
                                     ))}
                                 </Col>
                             </Form.Group>
-                            <Form.Group as={Row} className="mb-3">
-                                <Form.Label column md={12} className="py-0" lg={3} xxl={2}>Frontend Domains</Form.Label>
-                                <Col>
-                                    {frontendDomains.map((domain, index) => (
-                                        <Form.Check
-                                            key={domain}
-                                            id={"filter-frontend-domain-" + index}
-                                            inline
-                                            name="domains"
-                                            label={domain}
-                                            value={domain}
-                                            checked={isFrontendDomainSelected(index)}
-                                            onChange={e => handleFrontendDomainsChange(index, e)}
-                                        />
-                                    ))}
-                                </Col>
-                            </Form.Group>
+                            {frontendDomains.length > 0 && (
+                                <Form.Group as={Row} className="mb-3">
+                                    <Form.Label column md={12} className="py-0" lg={3} xxl={2}>Frontend Domains</Form.Label>
+                                    <Col>
+                                        {frontendDomains.map((domain, index) => (
+                                            <Form.Check
+                                                key={domain}
+                                                id={"filter-frontend-domain-" + index}
+                                                inline
+                                                name="domains"
+                                                label={domain}
+                                                value={domain}
+                                                checked={isFrontendDomainSelected(index)}
+                                                onChange={e => handleFrontendDomainsChange(index, e)}
+                                            />
+                                        ))}
+                                    </Col>
+                                </Form.Group>
+                            )}
                         </div>
                         <div className="ms-auto">
                             <div className="d-flex gap-2">

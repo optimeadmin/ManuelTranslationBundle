@@ -69,10 +69,9 @@ class TranslationRepository extends ServiceEntityRepository implements Repositor
     public function getAll(
         $search = null,
         $domain = null,
-        $onlyConflicted = null,
-        $onlyChanged = null
+        $frontendDomains = null,
     ) {
-        return $this->getAllQueryBuilder($search, $domain, $onlyConflicted, $onlyChanged)
+        return $this->getAllQueryBuilder($search, $domain, $frontendDomains)
             ->getQuery()
             ->getArrayResult();
     }
@@ -94,6 +93,7 @@ class TranslationRepository extends ServiceEntityRepository implements Repositor
             ')
             ->orderBy('translation.code')
             ->andWhere('translation.active = true')
+            ->andWhere('translation.onlyFrontend = false')
             ->getQuery()
             ->getArrayResult();
     }

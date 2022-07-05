@@ -44,12 +44,20 @@ class SyncFromConflicts
     private function processItem(Translation $translation, array $data): void
     {
         $values = $data['values'] ?? [];
+        $frontendDomains = $data['frontendDomains'] ?? [];
+        $onlyFrontend = $data['onlyFrontend'] ?? false;
         $hash = $data['hash'] ?? '';
         $active = (bool)$data['active'];
         $lastChanged = TranslationLastEdit::from($data['applyFor']);
 
         $this->synchronizer->updateTranslation(
-            $translation, $values, $hash, $active, $lastChanged
+            $translation,
+            $values,
+            $frontendDomains,
+            $onlyFrontend,
+            $hash,
+            $active,
+            $lastChanged,
         );
     }
 }

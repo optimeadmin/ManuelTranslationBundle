@@ -38,4 +38,16 @@ class TranslationsProvider
 
         return $translations;
     }
+
+    public function byLocaleAndFrontendDomains($locale, $domains): array
+    {
+        $items = $this->repository->getAll(null, null, (array)$domains);
+        $translations = [];
+
+        foreach ($items as $item) {
+            $translations[$item['code']] = $item['values'][$locale] ?? '';
+        }
+
+        return $translations;
+    }
 }

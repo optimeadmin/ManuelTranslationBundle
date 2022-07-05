@@ -31,6 +31,15 @@ class TranslationExtensionRuntime implements RuntimeExtensionInterface
         return $this->provider->byLocaleAndDomain($locale, $domain);
     }
 
+    public function getTranslationsByFrontendDomains(string|array $domains, string $locale = null): array
+    {
+        if (null === $locale) {
+            $locale = $this->requestStack->getCurrentRequest()->getLocale();
+        }
+
+        return $this->provider->byLocaleAndFrontendDomains($locale, $domains);
+    }
+
     public function getLocales(): array
     {
         return $this->locales;
