@@ -22,7 +22,7 @@ class TranslationExtension extends AbstractExtension
                 [TranslationExtensionRuntime::class, 'getTranslationsByDomain']
             ),
             new TwigFunction(
-                'get_translations_by_frontend_domains',
+                'get_frontend_translations',
                 [TranslationExtensionRuntime::class, 'getTranslationsByFrontendDomains']
             ),
             new TwigFunction(

@@ -267,8 +267,8 @@ class Synchronizer
                 $t->setValues($info['values']);
                 $t->setHash($info['hash']);
                 $t->setActive($info['active']);
-                $t->setFrontendDomains($info['frontend_domains']);
-                $t->setOnlyFrontend($info['only_frontend']);
+                $t->setFrontendDomains($info['frontend_domains'] ?? []);
+                $t->setOnlyFrontend($info['only_frontend'] ?? false);
                 $t->setLastChanged(TranslationLastEdit::FILE);
             }
         }
