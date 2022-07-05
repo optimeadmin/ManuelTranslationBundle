@@ -31,7 +31,9 @@ class TranslationRepository extends ServiceEntityRepository implements Repositor
         $inactive = false
     ) {
         $query = $this->createQueryBuilder('translation')
-            ->orderBy('translation.domain,translation.code, translation.active');
+            ->addOrderBy('translation.active', 'DESC')
+            ->addOrderBy('translation.domain', 'ASC')
+            ->addOrderBy('translation.code', 'ASC');
 
         if ($inactive) {
             $query->andWhere('translation.active = false');

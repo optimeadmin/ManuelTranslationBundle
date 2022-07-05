@@ -28,7 +28,7 @@ const FrontendFields = ({
                         selectDomains={handleFrontendDomainsChange}
                     />
                 ) : (
-                    frontendDomains?.join(', ') ?? 'NONE'
+                    frontendDomains?.join(', ') || 'NONE'
                 )}
             </div>
             <div className="col-md-5 d-flex gap-1 align-items-center">
