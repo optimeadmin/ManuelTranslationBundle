@@ -31,6 +31,12 @@ const App = ({items: defaultItems}) => {
                             onSubmit={persistItem}
                         />
                     ))}
+
+                    {items.length === 0  && (
+                        <div className="no-items-container">
+                            <h4>No Missing Items</h4>
+                        </div>
+                    )}
                 </div>)
             }
         </div>

@@ -3,6 +3,7 @@ import GlobalsContext from '../../context/GlobalsContext'
 import { Button, Card } from 'react-bootstrap'
 import Icon from '../Icon'
 import FrontendFields from './FrontendFields'
+import CopyToClipboard from '../CopyToClipboard'
 
 const ItemText = ({ item, handleEdit, handleEditToggle }) => {
     const { booleanLabel } = useContext(GlobalsContext)
@@ -11,7 +12,10 @@ const ItemText = ({ item, handleEdit, handleEditToggle }) => {
         <Card>
             <Card.Header onClick={handleEditToggle} role="button">
                 <div className="row align-items-center">
-                    <div className="col-md-5">{item.code}</div>
+                    <div className="col-md-5">
+                        <CopyToClipboard text={item.code} />
+                        {item.code}
+                    </div>
                     <div className="col-md-4 text-muted text-end">
                         {item.onlyFrontend ? (
                             <span><b>Domains:</b> {item.frontendDomains?.join(', ') ?? 'NONE'}</span>

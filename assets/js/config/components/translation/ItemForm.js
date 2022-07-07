@@ -6,6 +6,7 @@ import { Button, Card, Form } from 'react-bootstrap'
 import DomainField from './DomainField'
 import Icon from '../Icon'
 import FrontendFields from './FrontendFields'
+import CopyToClipboard from '../CopyToClipboard'
 
 const getFormValues = (defaultLocales, item) => {
     const itemValues = { ...item?.values || {} }
@@ -82,7 +83,12 @@ const ItemForm = ({ item, handleClose, handleEditToggle }) => {
                                 size="sm"
                                 disabled={!isNew}
                             />
-                            : formData.code
+                            : (
+                                <>
+                                    <CopyToClipboard text={item.code} />
+                                    formData.code
+                                </>
+                            )
                         }
                         {isLoading && <span className="ms-3">Loading...!</span>}
                     </div>
@@ -130,23 +136,23 @@ const ItemForm = ({ item, handleClose, handleEditToggle }) => {
                         />
                     </div>
                     <div className="d-grid gap-2 col-md-2">
-                        <Button variant="primary" onClick={handleSaveClick}><Icon icon="save"/>Save</Button>
-                        <Button variant="danger" onClick={handleClose}><Icon icon="x"/>Cancel</Button>
+                        <Button variant="primary" onClick={handleSaveClick}><Icon icon="save" />Save</Button>
+                        <Button variant="danger" onClick={handleClose}><Icon icon="x" />Cancel</Button>
 
-                        <hr/>
+                        <hr />
 
                         {!isNew && (
                             item.active
                                 ? <Button size="sm" variant="warning" onClick={handleDeactivateClick}>
-                                    <Icon icon="trash"/>Deactivate
+                                    <Icon icon="trash" />Deactivate
                                 </Button>
                                 : <Button size="sm" variant="success" onClick={handleActivateClick}>
-                                    <Icon icon="check-circle"/>Activate
+                                    <Icon icon="check-circle" />Activate
                                 </Button>
                         )}
                     </div>
                 </div>
-                {showErrors ? <ItemFormErrors errors={errors}/> : null}
+                {showErrors ? <ItemFormErrors errors={errors} /> : null}
             </Card.Body>
         </Card>
     )
