@@ -86,7 +86,7 @@ const ItemForm = ({ item, handleClose, handleEditToggle }) => {
                             : (
                                 <>
                                     <CopyToClipboard text={item.code} />
-                                    formData.code
+                                    {formData.code}
                                 </>
                             )
                         }
