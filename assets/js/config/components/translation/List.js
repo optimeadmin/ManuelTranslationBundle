@@ -1,6 +1,6 @@
-import React, {useEffect} from "react";
-import Item, {LoadingItem} from "./Item";
-import Paginator, {LoadingPaginator} from "./Paginator";
+import React from "react";
+import { LoadingItem } from "./Item";
+import Paginator, { LoadingPaginator } from "./Paginator";
 
 export default function List(props) {
     const {
@@ -32,15 +32,16 @@ export default function List(props) {
 const LoadingList = () => {
     return (
         <div>
-            <LoadingPaginator/>
+            <LoadingPaginator />
 
-            <LoadingItem/>
-            <LoadingItem/>
-            <LoadingItem/>
+            <LoadingItem />
+            <LoadingItem />
+            <LoadingItem />
 
-            <LoadingPaginator/>
+            <LoadingPaginator />
         </div>
     );
 };
 
-export {LoadingList};
+export { LoadingList };
+
