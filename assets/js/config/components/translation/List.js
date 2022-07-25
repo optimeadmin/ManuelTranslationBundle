@@ -1,47 +1,46 @@
-import React from "react";
-import { LoadingItem } from "./Item";
-import Paginator, { LoadingPaginator } from "./Paginator";
+import React from 'react'
+import { LoadingItem } from './Item'
+import Paginator, { LoadingPaginator } from './Paginator'
 
-export default function List(props) {
-    const {
-        paginationData,
-        changePage,
-        children,
-        loading = false
-    } = props;
+export default function List (props) {
+  const {
+    paginationData,
+    changePage,
+    children,
+    loading = false
+  } = props
 
-    return (
-        <div>
-            <Paginator
-                paginationData={paginationData}
-                onChange={changePage}
-                loading={loading}
-            />
+  return (
+    <div>
+      <Paginator
+        paginationData={paginationData}
+        onChange={changePage}
+        loading={loading}
+      />
 
-            {children}
+      {children}
 
-            <Paginator
-                paginationData={paginationData}
-                onChange={changePage}
-                loading={loading}
-            />
-        </div>
-    );
+      <Paginator
+        paginationData={paginationData}
+        onChange={changePage}
+        loading={loading}
+      />
+    </div>
+  )
 }
 
 const LoadingList = () => {
-    return (
-        <div>
-            <LoadingPaginator />
+  return (
+    <div>
+      <LoadingPaginator />
 
-            <LoadingItem />
-            <LoadingItem />
-            <LoadingItem />
+      <LoadingItem />
+      <LoadingItem />
+      <LoadingItem />
 
-            <LoadingPaginator />
-        </div>
-    );
-};
+      <LoadingPaginator />
+    </div>
+  )
+}
 
-export { LoadingList };
-
+export { LoadingList }

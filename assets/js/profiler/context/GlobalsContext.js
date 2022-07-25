@@ -1,24 +1,24 @@
-import React, {createContext} from "react";
+import React, { createContext } from 'react'
 
 const GlobalsContext = createContext({
-    locales: [],
-    paths: {
-        list: '',
-        getMissing: '',
-        create: '',
-    },
-});
+  locales: [],
+  paths: {
+    list: '',
+    getMissing: '',
+    create: '',
+  },
+})
 
-const GlobalsProvider = ({children, locales, paths}) => {
-    return (
-        <GlobalsContext.Provider value={{
-            locales,
-            paths,
-        }}>
-            {children}
-        </GlobalsContext.Provider>
-    );
+const GlobalsProvider = ({ children, locales, paths }) => {
+  return (
+    <GlobalsContext.Provider value={{
+      locales,
+      paths,
+    }}>
+      {children}
+    </GlobalsContext.Provider>
+  )
 }
 
-export {GlobalsProvider};
-export default GlobalsContext;
+export { GlobalsProvider }
+export default GlobalsContext
