@@ -19,7 +19,7 @@ const getFormValues = (defaultLocales, item) => {
   return { ...values, ...itemValues }
 }
 
-const ItemForm = ({ item, handleClose, handleEditToggle }) => {
+const ItemForm = ({ item, handleClose }) => {
   const { booleanLabel, locales: defaultLocales } = useContext(GlobalsContext)
 
   const { save: saveItem, isLoading } = useMutateItem()
@@ -72,7 +72,7 @@ const ItemForm = ({ item, handleClose, handleEditToggle }) => {
 
   return (
     <Card>
-      <Card.Header onClick={isNew ? null : handleEditToggle} role="button">
+      <Card.Header role="button">
         <div className="row align-items-center">
           <div className="col-md-5 m-0 d-flex">
             {isNew

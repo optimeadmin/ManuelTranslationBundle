@@ -25,7 +25,6 @@ const Item = ({ translation, removeEmptyItem }) => {
         ? <ItemForm
           item={translation}
           handleClose={handleCloseFormClick}
-          handleEditToggle={handleEditToggle}
         />
         : <ItemText
           item={translation}
