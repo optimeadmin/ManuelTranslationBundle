@@ -14,17 +14,13 @@ use ManuelAguirre\Bundle\TranslationBundle\Entity\Translation;
 use ManuelAguirre\Bundle\TranslationBundle\Entity\TranslationRepository;
 use ManuelAguirre\Bundle\TranslationBundle\Synchronization\Synchronizer;
 use ManuelAguirre\Bundle\TranslationBundle\Translation\CacheRemover;
-use ManuelAguirre\Bundle\TranslationBundle\Translation\Loader\DoctrineLoader;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Translation\Dumper\XliffFileDumper;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -37,13 +33,20 @@ class TranslationController extends AbstractController
     {
     }
 
-    #[Route("/list/{page}", name: "manuel_translation_list")]
-    public function index(
-        Request $request,
-        TranslationRepository $repository,
-        int $page = 1
-    ): Response {
+    #[Route("/list/", name: "manuel_translation_list")]
+    public function index(TranslationRepository $repository): Response
+    {
         return $this->render('@ManuelTranslation/Default/index.html.twig', array(
+            'locales' => $this->parameters->get('manuel_translation.locales'),
+            'domains' => $repository->getExistentDomains(),
+            'frontend_domains' => $repository->getExistentFrontendDomains(),
+        ));
+    }
+
+    #[Route("/list/react/", name: "manuel_translations_list_react")]
+    public function renderReact(TranslationRepository $repository): Response
+    {
+        return $this->render('@ManuelTranslation/Default/_react.html.twig', array(
             'locales' => $this->parameters->get('manuel_translation.locales'),
             'domains' => $repository->getExistentDomains(),
             'frontend_domains' => $repository->getExistentFrontendDomains(),
@@ -58,7 +61,7 @@ class TranslationController extends AbstractController
             'locales' => $this->parameters->get('manuel_translation.locales'),
         ));
     }
-    
+
     #[Route("/download.php", name: "manuel_translation_download_backup_file")]
     public function liveDownloadBackup(
         Synchronizer $synchronizator,

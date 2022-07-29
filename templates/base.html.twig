@@ -24,6 +24,8 @@
 <body>
 {% block body %}
     {{ include('@ManuelTranslation/header.html.twig') }}
+
+    {% block content_container %}
     <div class="container">
 
         <div class="page-header d-flex mb-5 border-bottom">
@@ -37,7 +39,9 @@
 
         {% block content %}{% endblock %}
     </div>
-{% endblock %}
+    {% endblock content_container%}
+
+{% endblock body %}
 {% block javascripts %}
     {# <script src="{{ asset('bundles/manueltranslation/js/jquery.min.js') }}"></script> #}
     {# <script src="{{ asset('bundles/manueltranslation/js/bootstrap.min.js') }}"></script> #}

@@ -1,0 +1,35 @@
+{% trans_default_domain "ManuelTranslationBundle" %}
+<style>
+    .trans-value {
+        background-color: #e7e1e3;
+        border: 1px solid #b9b9b9;
+        border-radius: 3px;
+        padding: 4px;
+        margin: 2px;
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="page-header d-flex mb-5 border-bottom">
+        <h1>{{ 'label.translation_list'|trans }}</h1>
+        <div class="ms-auto">
+            <div class="d-flex gap-2">
+                <a href="#" class="btn btn-primary" id="add-translation">
+                    <span aria-hidden="true" class="glyphicon glyphicon-plus"></span> {{ 'label.add'|trans }}
+                </a>
+                {{ include('@ManuelTranslation/Default/dropdown_options.html.twig') }}
+            </div>
+        </div>
+    </div>
+
+    <div id="translations-configuration"
+            data-paths="{{- {
+                'api': path('manuel_translation_api_list')
+            }|json_encode|e('html_attr') -}}"
+            data-locales="{{- locales|json_encode|e('html_attr') -}}"
+            data-domains="{{- domains|json_encode|e('html_attr') -}}"
+            data-frontend-domains="{{- frontend_domains|json_encode|e('html_attr') -}}"
+    ></div>
+
+    <script src="{{ asset('bundles/manueltranslation/config.js') }}"></script>
+</div>
