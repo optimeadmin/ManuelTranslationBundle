@@ -1,6 +1,8 @@
 <nav class="navbar navbar-dark bg-dark mb-5 navbar-expand-md">
     <div class="container">
-        <a class="navbar-brand" href="{{ path('manuel_translation_list') }}">Translations Config</a>
+        <a class="navbar-brand" href="{{ path(get_translation_bundle_param('header_path')) }}">
+            {{ get_translation_bundle_param('header_title') }}
+        </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>

@@ -25,6 +25,13 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
+                ->arrayNode('header')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->scalarNode('title')->defaultValue('Translations Config')->end()
+                        ->scalarNode('path')->defaultValue('manuel_translation_list')->end()
+                    ->end()
+                ->end()
                 ->arrayNode('locales')
                     ->isRequired()
                     ->requiresAtLeastOneElement()

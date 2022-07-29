@@ -5,12 +5,12 @@ namespace ManuelAguirre\Bundle\TranslationBundle\DependencyInjection;
 use ManuelAguirre\Bundle\TranslationBundle\BackupTranslationRepository;
 use ManuelAguirre\Bundle\TranslationBundle\Doctrine\Listener\ChangeTableNameListener;
 use ManuelAguirre\Bundle\TranslationBundle\Translation\Loader\DoctrineLoader;
+use ManuelAguirre\Bundle\TranslationBundle\Twig\Extension\ParamsExtension;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
-use function dd;
 
 /**
  * This is the class that loads and manages your bundle configuration
@@ -51,6 +51,15 @@ class ManuelTranslationExtension extends Extension
                 ->setArgument(0, $config['tables_prefix']);
         } else {
             $container->removeDefinition(ChangeTableNameListener::class);
+        }
+
+        if ($container->hasDefinition(ParamsExtension::class)) {
+            $container
+                ->findDefinition(ParamsExtension::class)
+                ->setArgument(0, [
+                    'header_title' => $config['header']['title'],
+                    'header_path' => $config['header']['path'],
+                ]);
         }
     }
 }
