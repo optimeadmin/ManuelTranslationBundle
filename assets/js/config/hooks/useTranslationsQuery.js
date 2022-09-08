@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect } from 'react'
+import { useCallback, useContext, useMemo } from 'react'
 import GlobalsContext, { itemsPerPage } from '../context/GlobalsContext'
 import axios from 'axios'
 import { v4 as uuid } from 'uuid'
@@ -16,14 +16,14 @@ const createNewItem = () => ({
   values: {},
 })
 
-const getTranslations = (apiUrl, page, itemsPerPage, filters) => {
+const getTranslations = (apiUrl) => {
   return axios.get(apiUrl, {
     params: {
-      search: filters?.search || '',
-      domains: (filters?.domains || []).filter(d => d.length > 0),
-      frontendDomains: (filters?.frontendDomains || []).filter(d => d.length > 0),
-      page,
-      perPage: itemsPerPage,
+      // search: filters?.search || '',
+      // domains: (filters?.domains || []).filter(d => d.length > 0),
+      // frontendDomains: (filters?.frontendDomains || []).filter(d => d.length > 0),
+      // page,
+      // perPage: itemsPerPage,
     }
   }).then(({ data, headers }) => {
     return {
@@ -33,24 +33,53 @@ const getTranslations = (apiUrl, page, itemsPerPage, filters) => {
   })
 }
 
+const getFilterFn = (filters) => {
+  const search = (filters?.search ?? '').toLowerCase()
+  const domains = (filters?.domains ?? []).filter(d => d.length)
+  const frontendDomains = (filters?.frontendDomains ?? []).filter(d => d.length)
+
+  return (item) => {
+    if (search.length && !item.code.toLowerCase().match(search)) {
+      if (!Object.values(item.values).some(value => value.toLowerCase().match(search))) {
+        return false
+      }
+    }
+
+    if (domains.length && !domains.includes(item.domain)) {
+      console.log({ domains, d: item.domain })
+      return false
+    }
+
+    if (frontendDomains.length && !frontendDomains.some(d => item.frontendDomains.includes(d))) {
+      return false
+    }
+
+    console.log({ search })
+    return true
+  }
+}
+
 const useTranslationsQuery = (filters, page) => {
   const { paths: { api: apiUrl } } = useContext(GlobalsContext)
   const queryClient = useQueryClient()
 
-  const queryKey = ['translations', 'list', apiUrl, page, itemsPerPage, filters]
+  // const queryKey = ['translations', 'list', apiUrl, page, itemsPerPage, filters]
+  const queryKey = ['translations', 'list', apiUrl]
 
   const translationsQuery = useQuery(
     queryKey,
-    () => getTranslations(apiUrl, page, itemsPerPage, filters),
-    {
-      keepPreviousData: true,
-    })
+    () => getTranslations(apiUrl, page, itemsPerPage, filters)
+  )
 
-  const { isLoading, isFetching, data: { items: translations = [], totalCount = 0 } = {} } = translationsQuery
+  const { isLoading, isFetching, data: { items = [], totalCount = 0 } = {} } = translationsQuery
 
-  useEffect(() => {
-    queryClient.removeQueries(['translations', 'list'], { active: false })
-  }, [filters])
+  let translations = useMemo(() => items.filter(getFilterFn(filters)), [filters, items])
+
+  translations = useMemo(() => {
+    const sliceStart = (page - 1) * itemsPerPage
+    const sliceEnd = sliceStart + itemsPerPage
+    return translations.slice(sliceStart, sliceEnd)
+  }, [page, itemsPerPage, translations])
 
   const addEmpty = useCallback(() => {
     queryClient.setQueryData(queryKey, ({ items, totalCount }) => {

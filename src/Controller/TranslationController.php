@@ -53,15 +53,6 @@ class TranslationController extends AbstractController
         ));
     }
 
-    #[Route("/show/item/{id}", name: "manuel_translation_show_item")]
-    public function getTranslationItem(Translation $translation): Response
-    {
-        return $this->render('@ManuelTranslation/Translation/_row.html.twig', array(
-            'translation' => $translation,
-            'locales' => $this->parameters->get('manuel_translation.locales'),
-        ));
-    }
-
     #[Route("/download.php", name: "manuel_translation_download_backup_file")]
     public function liveDownloadBackup(
         Synchronizer $synchronizator,
