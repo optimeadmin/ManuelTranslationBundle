@@ -46,7 +46,6 @@ const getFilterFn = (filters) => {
     }
 
     if (domains.length && !domains.includes(item.domain)) {
-      console.log({ domains, d: item.domain })
       return false
     }
 
@@ -54,7 +53,6 @@ const getFilterFn = (filters) => {
       return false
     }
 
-    console.log({ search })
     return true
   }
 }
@@ -71,9 +69,10 @@ const useTranslationsQuery = (filters, page) => {
     () => getTranslations(apiUrl, page, itemsPerPage, filters)
   )
 
-  const { isLoading, isFetching, data: { items = [], totalCount = 0 } = {} } = translationsQuery
+  const { isLoading, isFetching, data: { items = [] } = {} } = translationsQuery
 
   let translations = useMemo(() => items.filter(getFilterFn(filters)), [filters, items])
+  const totalCount = translations.length
 
   translations = useMemo(() => {
     const sliceStart = (page - 1) * itemsPerPage

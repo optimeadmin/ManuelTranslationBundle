@@ -5,7 +5,7 @@ import Icon from './Icon'
 const CopyToClipboard = ({ text }) => {
   const [isCopied, setCopied] = useState(false)
   const containerId = useId()
-  const canCopy = false && !!navigator.clipboard
+  const canCopy = !!navigator.clipboard
 
   const handleClick = (e) => {
     e.preventDefault()
@@ -34,7 +34,7 @@ const CopyToClipboard = ({ text }) => {
   return (
     <OverlayTrigger
       overlay={canCopy ? renderTooltip() : renderPopover()}
-      trigger={canCopy ? 'hover' : 'click'}
+      trigger={canCopy ? ['hover', 'focus'] : 'click'}
       rootClose
     >
       <span onClick={handleClick}>
