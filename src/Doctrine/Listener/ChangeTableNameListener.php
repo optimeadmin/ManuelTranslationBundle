@@ -8,12 +8,18 @@ namespace ManuelAguirre\Bundle\TranslationBundle\Doctrine\Listener;
 use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
 use Doctrine\ORM\Events;
 use ManuelAguirre\Bundle\TranslationBundle\Entity\Translation;
-use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /**
  * @author Manuel Aguirre
  */
-#[AsEventListener(event: Events::loadClassMetadata, method: 'loadClassMetadata')]
+#[AutoconfigureTag(
+    name: 'doctrine.event_listener',
+    attributes: [
+        'event' => Events::loadClassMetadata,
+        'method' => 'loadClassMetadata'
+    ]
+)]
 class ChangeTableNameListener
 {
     public function __construct(private string $tablePrefix)
