@@ -13,6 +13,7 @@ use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 /**
  * @author Manuel Aguirre
  */
+#[AsEventListener(event: Events::loadClassMetadata, method: 'loadClassMetadata')]
 class ChangeTableNameListener
 {
     public function __construct(private string $tablePrefix)
@@ -20,7 +21,6 @@ class ChangeTableNameListener
         $this->tablePrefix = rtrim($tablePrefix, '_') . '_';
     }
 
-    #[AsEventListener(Events::loadClassMetadata)]
     public function loadClassMetadata(LoadClassMetadataEventArgs $eventArgs): void
     {
         $metadata = $eventArgs->getClassMetadata();
