@@ -4,6 +4,8 @@
 
 {% block content_container %}
     <div class="container">
+        {{ include('@ManuelTranslation/flash.html.twig') }}
+
         {{ render(
             controller('ManuelAguirre\\Bundle\\TranslationBundle\\Controller\\TranslationController::renderReact')
         ) }}

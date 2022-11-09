@@ -39,6 +39,8 @@ const getFilterFn = (filters) => {
   const frontendDomains = (filters?.frontendDomains ?? []).filter(d => d.length)
 
   return (item) => {
+    if (item.id === null) return true
+
     if (search.length && !item.code.toLowerCase().match(search)) {
       if (!Object.values(item.values).some(value => value.toLowerCase().match(search))) {
         return false
