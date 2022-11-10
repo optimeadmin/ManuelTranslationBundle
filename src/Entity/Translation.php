@@ -7,7 +7,6 @@ use Doctrine\ORM\Mapping as ORM;
 use ManuelAguirre\Bundle\TranslationBundle\Model\TranslationLastEdit;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
-use function dump;
 
 #[ORM\Table("translation_bundle_translation")]
 #[ORM\Entity(repositoryClass: TranslationRepository::class)]
@@ -16,6 +15,7 @@ use function dump;
     fields: ["code", "domain"],
     message: "The code is already in use for this domain",
 )]
+#[ORM\ChangeTrackingPolicy('DEFERRED_EXPLICIT')]
 class Translation
 {
     #[ORM\Column]

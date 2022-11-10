@@ -16,6 +16,7 @@ use ManuelAguirre\Bundle\TranslationBundle\Entity\Translation;
 use ManuelAguirre\Bundle\TranslationBundle\Entity\TranslationRepository;
 use ManuelAguirre\Bundle\TranslationBundle\Model\TranslationLastEdit;
 use Symfony\Component\Filesystem\Filesystem;
+use function array_diff;
 use function sort;
 
 /**
@@ -176,7 +177,7 @@ class Synchronizer
                             $t->isOnlyFrontend(),
                             $t->getHash(),
                             $t->getActive(),
-                            $dbT->getLastChanged()
+                            TranslationLastEdit::FILE,
                         );
                         ++$numUpdates;
                     } else {
@@ -231,9 +232,13 @@ class Synchronizer
             sort($fileDomains);
             sort($dbDomains);
 
-            if ($fileDomains !== $dbDomains) {
-                return false;
+            if ($fileDomains === $dbDomains) {
+                return true;
             }
+
+            // no ha conflicto si el archivo tiene los mismos o más dominios que la bd
+            // si el archivo tiene menos dominios que la bd, hay conflicto.
+            return count(array_diff($dbDomains, $fileDomains)) === 0;
         }
 
         return true;
