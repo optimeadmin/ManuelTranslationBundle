@@ -38,7 +38,7 @@ class Synchronizer
     ) {
     }
 
-    public function generateFile(?string $path = null): bool
+    public function generateFile(?string $path = null, bool $forceNewHash = false): bool
     {
         $fileHash = $this->getFileHash();
         $localHash = $this->getLocalHash();
@@ -61,7 +61,7 @@ class Synchronizer
         /** @var Translation $translation */
         foreach ($translations as $translation) {
             $export['translations'][$translation['domain']][$translation['code']] = [
-                'hash' => $translation['hash'],
+                'hash' => $forceNewHash ? $this->generateHashNumber() : $translation['hash'],
                 'active' => $translation['active'],
                 'frontend_domains' => $translation['frontendDomains'],
                 'only_frontend' => $translation['onlyFrontend'],

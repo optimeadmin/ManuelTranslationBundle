@@ -60,7 +60,7 @@ class TranslationController extends AbstractController
     ): Response {
         $path = $this->getParameter('kernel.cache_dir') . '/sf_translations.php';
 
-        if (!$synchronizator->generateFile($path)) {
+        if (!$synchronizator->generateFile($path, true)) {
             $this->addFlash('warning',
                 $translator->trans('local_hash_update_of_range', array(), 'ManuelTranslationBundle'));
 
