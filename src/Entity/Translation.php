@@ -177,7 +177,11 @@ class Translation
             return;
         }
 
-        $this->setHash(uniqid(md5(serialize($this->getValues()))));
+        $this->setHash(uniqid(md5(serialize([
+            $this->getValues(),
+            $this->getFrontendDomains(),
+            $this->isOnlyFrontend(),
+        ]))));
     }
 
     public function getLastChanged(): TranslationLastEdit
