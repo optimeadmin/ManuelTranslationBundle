@@ -66,9 +66,15 @@
   }
 }
 
+.theme-light {
+  .missing-translations-creator {
+
+  }
+}
+
 .missing-translations-creator {
   border: 1px solid #ccc;
-  background-color: white;
+  background-color: var(--page-background);
 
   header {
     display: flex;
@@ -94,7 +100,7 @@
 
   .translation-item-creator {
     border-top: 1px solid #ccc;
-    background-color: white;
+    background-color: var(--page-background);
     padding: 20px 10px;
     display: flex;
     flex-wrap: wrap;
@@ -118,9 +124,10 @@
     }
 
     .message {
-      width: 100%;
-      flex-shrink: 0;
-      padding: 10px;
+      //width: 100%;
+      //flex-shrink: 0;
+      flex-basis: 100%;
+      padding: 10px 0 10px 0;
       text-align: center;
       background-color: #9dc7b5;
       border: 2px solid #739a89;
@@ -145,16 +152,16 @@
         display: flex;
         border: 1px solid #aaaaaa;
         //border-radius: 3px;
-        background-color: #e0e0e0;
+        background-color: var(--page-background);
         padding: 3px 6px;
         align-items: center;
-        color: #777777;
+        //color: #777777;
         box-shadow: 2px 2px 5px #a6a6a6;
       }
 
       span {
         margin-left: auto;
-        color: #111;
+        //color: #111;
         user-select: all;
       }
 
@@ -193,6 +200,12 @@
           background-color: #eee;
           text-transform: uppercase;
           font-weight: bold;
+          font-family: monospace;
+
+          @at-root .theme-dark & {
+            background-color: #717171;
+            border-color: #555555;
+          }
         }
 
         textarea {
@@ -201,6 +214,11 @@
           resize: vertical;
           border-left: none;
           outline: none;
+
+          @at-root .theme-dark & {
+            background-color: #b2b2b2;
+            border-color: #555555;
+          }
         }
       }
     }
@@ -219,7 +237,6 @@
 
         &:hover {
           filter: brightness(80%);
-
         }
 
         &:active {
