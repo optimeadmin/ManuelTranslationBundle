@@ -28,10 +28,11 @@ class SyncController extends AbstractController
 {
     #[Route("/generate-file", name: "manuel_translation_generate_file")]
     public function generateFiles(
+        Request $request,
         Synchronizer $synchronizator,
         TranslatorInterface $translator
     ): Response {
-        if ($synchronizator->generateFile()) {
+        if ($synchronizator->generateFile(null, $request->query->getBoolean('force-hash'))) {
             $this->addFlash('success',
                 $translator->trans('update_file_complete_flash', [], 'ManuelTranslationBundle'));
         } else {
