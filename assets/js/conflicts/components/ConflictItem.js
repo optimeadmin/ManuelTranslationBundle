@@ -4,6 +4,7 @@ import { Card, Form } from 'react-bootstrap'
 const ConflictItem = ({ item, onSelectionChange, currentSelectType }) => {
   const selectFileTarget = () => onSelectionChange('file')
   const selectDatabaseTarget = () => onSelectionChange('database')
+  const itemIdPrefix = useId()
 
   return (
     <Card className="mb-2">
@@ -20,7 +21,7 @@ const ConflictItem = ({ item, onSelectionChange, currentSelectType }) => {
           <ValuesInfo
             selected={currentSelectType === 'file'}
             onSelect={selectFileTarget}
-            itemId={item.hash}
+            itemId={`${itemIdPrefix}-${item.hash}`}
             type="file"
             values={item.file.values}>
             <FrontendInfo
@@ -31,7 +32,7 @@ const ConflictItem = ({ item, onSelectionChange, currentSelectType }) => {
           <ValuesInfo
             selected={currentSelectType === 'database'}
             onSelect={selectDatabaseTarget}
-            itemId={item.hash}
+            itemId={`${itemIdPrefix}-${item.hash}`}
             type="database"
             values={item.database.values}>
             <FrontendInfo
