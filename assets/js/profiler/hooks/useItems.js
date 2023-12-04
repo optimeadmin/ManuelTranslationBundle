@@ -10,8 +10,8 @@ function useItemsQuery (defaultItems) {
   const { paths: { getMissing }, locales } = useContext(GlobalsContext)
 
   const { data, isLoading } = useQuery({
-    queryKey: ['conflict', 'items', getMissing, locales, defaultItems],
-    async queryFn ({}) {
+    queryKey: ['profiler', 'missing-items', getMissing, locales, defaultItems],
+    async queryFn () {
       const search = defaultItems.map(item => ({ code: item.code, domain: item.domain }))
 
       const { data } = await axios.post(getMissing, search)
@@ -40,7 +40,6 @@ function useItemsQuery (defaultItems) {
 }
 
 export default function useItems (defaultItems) {
-  const { paths: { getMissing, create: createPath }, locales } = useContext(GlobalsContext)
   const [items, setItems] = useState(null)
   const { data, isLoading } = useItemsQuery(defaultItems)
 

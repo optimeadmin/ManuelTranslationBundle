@@ -17,7 +17,7 @@ export function useMutateItem () {
     },
     async onSuccess () {
       setTimeout(() => {
-        queryClient.invalidateQueries(['conflict', 'items'])
+        queryClient.invalidateQueries(['profiler', 'missing-items'])
       }, 1000)
     },
   })
