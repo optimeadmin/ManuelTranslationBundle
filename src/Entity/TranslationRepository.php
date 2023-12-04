@@ -114,9 +114,9 @@ class TranslationRepository extends ServiceEntityRepository implements Repositor
     {
         $this->getEntityManager()->persist($entity);
 
-//        if ($flush) {
-//            $this->getEntityManager()->flush();
-//        }
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
     }
 
     public function getExistentDomains()
