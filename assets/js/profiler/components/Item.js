@@ -1,9 +1,10 @@
-import React, { startTransition, useState } from 'react'
+import React from 'react'
+import { useForm } from 'react-hook-form'
+import { useMutateItem } from '../hooks/useMutateItem'
 
 const STATUS_EDITING = 'editing'
 const STATUS_PERSISTING = 'persisting'
 const STATUS_PERSISTED = 'persisted'
-const STATUS_ERROR = 'error'
 
 const persistButtonLabel = (status) => {
   switch (status) {
@@ -16,83 +17,64 @@ const persistButtonLabel = (status) => {
   }
 }
 
-const Item = ({ item, onChange, onSubmit }) => {
-  const [status, setStatus] = useState(STATUS_EDITING)
-  const [message, setMessage] = useState('')
+export default function Item ({ item }) {
   const parameters = Array.from(Object.keys(item.parameters))
-  const { values } = item
-  const valuesMap = Object.entries(values)
+  const valuesMap = Object.keys(item.values)
 
-  const handleValueChange = (locale, event) => {
-    const newValues = { ...values, [locale]: event.target.value }
+  const { isMutating, isSuccess, error, save } = useMutateItem()
+  const { register, handleSubmit } = useForm({ values: item })
+  let status = STATUS_EDITING
 
-    onChange(item.id, { values: newValues })
-  }
-
-  const handleCreateClick = () => {
-    startTransition(() => {
-      setMessage('')
-      setStatus(STATUS_PERSISTING)
-    })
-    onSubmit(item.id).then(() => {
-      setMessage('')
-      setStatus(STATUS_PERSISTED)
-    }).catch((message) => {
-      setMessage(message)
-      setStatus(STATUS_ERROR)
-    })
+  if (isSuccess) {
+    status = STATUS_PERSISTED
+  } else if (isMutating) {
+    status = STATUS_PERSISTING
+  } else if (error) {
+    status = 'error'
   }
 
   return (
-    <div className={
-      `translation-item-creator ${status}`
-    }>
-      {message?.length > 0
-        ? (
-          <div className={`message ${status}`}>{message}</div>
-        )
-        : null
-      }
+    <form onSubmit={handleSubmit(save)} className={`translation-item-creator ${status}`}>
+      {error && <div className={`message ${status}`}>{error}</div>}
 
       <div className="item-data">
         <div>Code<span>{item.code}</span></div>
         <div>Domain<span>{item.domain}</span></div>
-        {parameters.length > 0
-          ? (
-            <div>
-                            Parameters
-              <span className="item-parameters">
-                {parameters.map((p, key) => (<span key={key}>{p}</span>))}
-              </span>
-            </div>
-          )
-          : null
-        }
+        {parameters.length > 0 && <Parameters parameters={parameters}/>}
       </div>
+
       <div className="item-values">
-        {valuesMap.map(([locale, value]) => (
-          <div key={locale}>
-            <span>{locale}</span>
-            <textarea
-              disabled={STATUS_PERSISTING === status}
-              value={value}
-              onChange={(e) => handleValueChange(locale, e)}
-            />
-          </div>
+        {valuesMap.map(locale => (
+          <LocaleValue key={locale} locale={locale} register={register} isMutating={isMutating}/>
         ))}
       </div>
       <div className="item-actions">
         <div className="btn-container">
-          <button
-            onClick={handleCreateClick}
-            disabled={STATUS_PERSISTING === status}
-          >
+          <button type='submit' disabled={isMutating}>
             {persistButtonLabel(status)}
           </button>
         </div>
       </div>
+    </form>
+  )
+}
+
+function Parameters ({ parameters }) {
+  return (
+    <div>
+      Parameters
+      <span className="item-parameters">
+        {parameters.map((p, key) => (<span key={key}>{p}</span>))}
+      </span>
     </div>
   )
 }
 
-export default Item
+function LocaleValue ({ locale, register, isMutating }) {
+  return (
+    <div>
+      <span>{locale}</span>
+      <textarea {...register(`values[${locale}]`)} disabled={isMutating}/>
+    </div>
+  )
+}

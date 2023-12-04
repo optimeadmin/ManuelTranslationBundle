@@ -21,11 +21,11 @@ class Translation
     #[ORM\Column]
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    private ?int $id;
+    private ?int $id = null;
 
     #[ORM\Column]
     #[Assert\NotBlank]
-    private string $code;
+    private string $code = '';
 
     #[ORM\Column]
     #[Assert\NotBlank]
@@ -41,7 +41,7 @@ class Translation
     private bool $onlyFrontend = false;
 
     #[ORM\Column(name: "trans_values", type: "json", nullable: true)]
-    private array $values;
+    private array $values = [];
 
     #[ORM\Column(name: "created_at", nullable: true, updatable: false)]
     private DateTimeImmutable $createdAt;

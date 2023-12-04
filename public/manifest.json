@@ -5,6 +5,6 @@
   "bundles/manueltranslation/profiler.js": "./profiler.js",
   "bundles/manueltranslation/profiler_css.css": "./profiler_css.css",
   "bundles/manueltranslation/styles.css": "./styles.css",
-  "bundles/manueltranslation/fonts/bootstrap-icons.woff?": "./fonts/bootstrap-icons.7ff3ca6f.woff",
-  "bundles/manueltranslation/fonts/bootstrap-icons.woff2?": "./fonts/bootstrap-icons.f2539a50.woff2"
+  "bundles/manueltranslation/fonts/bootstrap-icons.woff?": "./fonts/bootstrap-icons.66b7720f.woff",
+  "bundles/manueltranslation/fonts/bootstrap-icons.woff2?": "./fonts/bootstrap-icons.64ed46b2.woff2"
 }

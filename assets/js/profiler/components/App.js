@@ -4,7 +4,7 @@ import GlobalsContext from '../context/GlobalsContext'
 import useItems from '../hooks/useItems'
 
 const App = ({ items: defaultItems }) => {
-  const { items, updateItem, persistItem } = useItems(defaultItems)
+  const { items, updateItem, isLoading } = useItems(defaultItems)
   const { paths } = useContext(GlobalsContext)
 
   const handleChange = (id, itemData) => {
@@ -18,17 +18,15 @@ const App = ({ items: defaultItems }) => {
         <a href={paths.list}>Translations List</a>
       </header>
 
-      {items === false
-        ? (<div>
-          <h3>Loading....!</h3>
-        </div>)
-        : (<div>
+      {isLoading && <div><h3>Loading....!</h3></div>}
+      {!isLoading && (
+        <div>
           {items.map(item => (
             <Item
               key={item.id}
               item={item}
               onChange={handleChange}
-              onSubmit={persistItem}
+              // onSubmit={persistItem}
             />
           ))}
 
@@ -37,8 +35,8 @@ const App = ({ items: defaultItems }) => {
               <h4>No Missing Items</h4>
             </div>
           )}
-        </div>)
-      }
+        </div>
+      )}
     </div>
   )
 }

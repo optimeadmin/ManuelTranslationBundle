@@ -1,38 +1,50 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useState } from 'react'
 import axios from 'axios'
 import GlobalsContext from '../context/GlobalsContext'
 import { v4 as uuid } from 'uuid'
+import { useQuery } from 'react-query'
 
 const equalItems = (a, b) => (a.code === b.code && a.domain === b.domain)
 
-export default function useItems (defaultItems) {
-  const [items, setItems] = useState(false)
-  const { paths: { getMissing, create: createPath }, locales } = useContext(GlobalsContext)
+function useItemsQuery (defaultItems) {
+  const { paths: { getMissing }, locales } = useContext(GlobalsContext)
 
-  useEffect(() => {
-    const search = defaultItems.map(item => ({ code: item.code, domain: item.domain }))
+  const { data, isLoading } = useQuery({
+    queryKey: ['conflict', 'items', getMissing, locales, defaultItems],
+    async queryFn ({}) {
+      const search = defaultItems.map(item => ({ code: item.code, domain: item.domain }))
 
-    axios.post(getMissing, search)
-      .then(({ data }) => data)
-      .then(missing => {
-        const existsInMissing = (item) => {
-          return missing?.some(missingItem => equalItems(missingItem, item))
+      const { data } = await axios.post(getMissing, search)
+
+      const existsInMissing = (item) => {
+        return data?.some(missingItem => equalItems(missingItem, item))
+      }
+
+      return defaultItems.filter(existsInMissing).map(item => {
+        return {
+          ...item,
+          id: uuid(),
+          values: locales.reduce((localesObj, locale) => ({
+            ...localesObj,
+            [locale]: item.code,
+          }), {}),
         }
-
-        setItems(defaultItems.filter(existsInMissing).map(item => {
-          return {
-            ...item,
-            id: uuid(),
-            values: locales.reduce((localesObj, locale) => ({
-              ...localesObj,
-              [locale]: item.code,
-            }), {}),
-          }
-        }))
       })
-  }, [defaultItems])
+    }
+  })
 
-  const updateItem = (id, newItemData) => {
+  return {
+    data,
+    isLoading,
+  }
+}
+
+export default function useItems (defaultItems) {
+  const { paths: { getMissing, create: createPath }, locales } = useContext(GlobalsContext)
+  const [items, setItems] = useState(null)
+  const { data, isLoading } = useItemsQuery(defaultItems)
+
+  function updateItem (id, newItemData) {
     const newItems = [...items]
     const indexToUpdate = newItems.findIndex(item => item.id === id)
 
@@ -46,47 +58,20 @@ export default function useItems (defaultItems) {
     setItems(newItems)
   }
 
-  const persistItem = (id) => {
-    const itemToPersist = items.find(item => item.id === id)
-
-    if (!itemToPersist) {
-      return
-    }
-
-    const { code, domain, values } = itemToPersist
-
-    return new Promise((resolve, reject) => {
-      axios.post(createPath, { code, domain, values }).then(() => {
-        resolve()
-
-        setTimeout(() => {
-          setItems(oldItems => (oldItems.filter(item => item.id !== id)))
-        }, 1100)
-      }).catch(({ message, response }) => {
-        let error = message
-
-        if (response.status === 400) {
-          error = JSON.stringify(response.data || message, null, 1)
-        }
-
-        // if (response.status === 0) {
-        //     return Promise.reject(message);
-        // } else if (response.status >= 500) {
-        //     console.log(response)
-        //     return Promise.reject(message);
-        // } else {
-        //     console.log(response)
-        //     error = message;
-        // }
-
-        reject(error)
-      })
-    })
-  }
+  // async function persistItem (id) {
+  //   const itemToPersist = items.find(item => item.id === id)
+  //
+  //   if (!itemToPersist) {
+  //     return
+  //   }
+  //
+  //   await mutate(itemToPersist)
+  // }
 
   return {
-    items,
+    items: items ?? data,
+    isLoading,
     updateItem,
-    persistItem,
+    // persistItem,
   }
 }

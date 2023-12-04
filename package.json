@@ -3,13 +3,16 @@
   "version": "1.0.0",
   "description": "Bundle que permite la creación y edición de etiquetas de traducción desde la Base de datos \r Puedes Crear y Modificar traducciones de etiquetas de manera simple y sin tocar archivos xml, yml, php...\r Y además crear facilmente desde el Profiler las etiquetas sin traducir aun.",
   "main": "webpack.config.js",
+  "engines": {
+    "node": ">=18 <21"
+  },
   "directories": {
     "doc": "doc"
   },
   "dependencies": {
     "@babel/preset-react": "^7.17.12",
-    "@symfony/webpack-encore": "^2.1.0",
-    "axios": "^0.27.2",
+    "@symfony/webpack-encore": "^4.5.0",
+    "axios": "^1.6.2",
     "bootstrap": "^5.1.3",
     "bootstrap-icons": "^1.8.3",
     "core-js": "^3.22.7",
@@ -17,10 +20,11 @@
     "react": "^18.1.0",
     "react-bootstrap": "^2.4.0",
     "react-dom": "^18.1.0",
+    "react-hook-form": "^7.48.2",
     "react-query": "^3.39.1",
     "sass": "^1.52.1",
-    "sass-loader": "^12.6.0",
-    "uuid": "^8.3.2",
+    "sass-loader": "^13.3.2",
+    "uuid": "^9.0.1",
     "webpack-notifier": "^1.15.0"
   },
   "scripts": {
@@ -43,7 +47,7 @@
     "eslint": "^8.20.0",
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-n": "^15.2.4",
+    "eslint-plugin-n": "^16.3.1",
     "eslint-plugin-promise": "^6.0.0",
     "eslint-plugin-react": "^7.30.1"
   }
