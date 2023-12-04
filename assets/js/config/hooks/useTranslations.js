@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { useContext, useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { useQuery, useQueryClient } from 'react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { v4 as uuid } from 'uuid'
 import GlobalsContext, { itemsPerPage } from '../context/GlobalsContext'
 import { getItem } from '../storage/domains'

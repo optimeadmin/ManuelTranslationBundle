@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import ConflictItem from './ConflictItem'
 import { Button } from 'react-bootstrap'
 import axios from 'axios'
-import { useMutation, useQuery, useQueryClient } from 'react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 const buildSelected = (item, type) => {
   return {

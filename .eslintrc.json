@@ -2,11 +2,13 @@
     "root": true,
     "env": {
         "browser": true,
-        "es2021": true
+        "es2021": true,
+        "node": true
     },
     "extends": [
         "plugin:react/recommended",
-        "standard"
+        "plugin:react-hooks/recommended",
+        "eslint:recommended"
     ],
     "parserOptions": {
         "ecmaFeatures": {
@@ -23,8 +25,12 @@
         "react/prop-types": "off",
         "indent": [
             "error",
-            2
-        ]
+            2,
+            {
+                "SwitchCase": 1
+            }
+        ],
+        "eol-last": "off"
     },
     "settings": {
         "react": {

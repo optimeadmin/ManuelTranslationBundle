@@ -1,9 +1,8 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import React from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './components/App'
 import { GlobalsProvider } from './context/GlobalsContext'
-import { QueryClient, QueryClientProvider } from 'react-query'
-import { ReactQueryDevtools } from 'react-query/devtools'
 
 const container = document.getElementById('translations-configuration')
 const paths = JSON.parse(container.dataset.paths || '{}')
@@ -31,7 +30,6 @@ root.render(
         locales={locales}>
         <App />
       </GlobalsProvider>
-      <ReactQueryDevtools />
     </QueryClientProvider>
   </React.StrictMode>
 )

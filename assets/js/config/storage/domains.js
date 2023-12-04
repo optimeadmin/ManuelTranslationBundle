@@ -1,4 +1,3 @@
-
 const localItems = {}
 
 export const setItem = (index, data) => {

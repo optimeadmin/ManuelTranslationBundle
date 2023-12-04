@@ -2,7 +2,7 @@ import { useContext, useState } from 'react'
 import axios from 'axios'
 import GlobalsContext from '../context/GlobalsContext'
 import { v4 as uuid } from 'uuid'
-import { useQuery } from 'react-query'
+import { useQuery } from '@tanstack/react-query'
 
 const equalItems = (a, b) => (a.code === b.code && a.domain === b.domain)
 

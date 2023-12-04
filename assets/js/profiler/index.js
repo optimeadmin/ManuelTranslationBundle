@@ -2,7 +2,7 @@ import React from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './components/App'
 import { GlobalsProvider } from './context/GlobalsContext'
-import { QueryClient, QueryClientProvider } from 'react-query'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 (() => {
   if (!missingTranslations) {

@@ -1,6 +1,6 @@
-import { useMutation, useQueryClient } from 'react-query'
 import axios from 'axios'
 import { useContext } from 'react'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import GlobalsContext from '../context/GlobalsContext'
 import { setItem, setLocalItem } from '../storage/domains'
 
