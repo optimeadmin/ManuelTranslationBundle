@@ -18,8 +18,9 @@ const useMutateItem = () => {
   const { paths: { api }, addDomain, addFrontendDomain } = useContext(GlobalsContext)
   const queryClient = useQueryClient()
 
-  const itemMutation = useMutation((item) => persistTranslation(api, item), {
-    onSuccess ({ data }) {
+  const { isLoading, mutateAsync } = useMutation({
+    mutationFn: (item) => persistTranslation(api, item),
+    async onSuccess ({ data }) {
       const queryKeyFilter = ['translations', 'list']
 
       data?.domain && addDomain(data.domain)
@@ -31,24 +32,13 @@ const useMutateItem = () => {
         data.frontendDomains
       )
 
-      queryClient.setQueriesData(queryKeyFilter, ({ items, totalCount }) => {
-        const newItems = [...items]
-        const index = newItems.findIndex(item => item.id === data.id)
-
-        if (index !== -1) {
-          // actualizamos la data al momento
-          newItems[index] = { ...newItems[index], ...data }
-        }
-
-        return { items: newItems, totalCount }
-      })
-      queryClient.invalidateQueries(queryKeyFilter)
+      await queryClient.invalidateQueries(queryKeyFilter)
     }
   })
 
   return {
-    save: itemMutation.mutateAsync,
-    isLoading: itemMutation.isLoading,
+    save: mutateAsync,
+    isLoading,
   }
 }
 

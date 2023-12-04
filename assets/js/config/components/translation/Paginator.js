@@ -2,8 +2,7 @@ import React from 'react'
 import { Pagination, Placeholder } from 'react-bootstrap'
 import { calculatePagesCount, itemsPerPage } from '../../context/GlobalsContext'
 
-const Paginator = ({ paginationData, onChange, loading }) => {
-  const { page: currentPage, totalCount } = paginationData
+const Paginator = ({ currentPage, totalCount, onChange, loading }) => {
   const pagesCount = calculatePagesCount(totalCount)
   const itemsCount = itemsPerPage > totalCount ? totalCount : itemsPerPage
 

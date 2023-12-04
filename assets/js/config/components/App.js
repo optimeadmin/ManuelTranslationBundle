@@ -1,57 +1,31 @@
-import React, { useEffect } from 'react'
+import React from 'react'
+import { useAddEmptyListener, useConfig, useGetTranslations } from '../hooks/useTranslations'
 import Filter from './translation/Filter'
-import List, { LoadingList } from './translation/List'
 import Item from './translation/Item'
-import useTranslations from '../hooks/useTranslations'
+import List, { LoadingList } from './translation/List'
+import Paginator from './translation/Paginator'
 
 export default function App () {
-  const {
-    translations,
-    isLoading,
-    isFetching,
-    config,
-    setConfig,
-    translationActions,
-  } = useTranslations()
-
-  useEffect(() => {
-    const addBtn = document.getElementById('add-translation')
-
-    const handleAddClick = (e) => {
-      e?.preventDefault()
-      translationActions.addEmptyItem()
-    }
-
-    addBtn.addEventListener('click', handleAddClick)
-
-    return () => addBtn.removeEventListener('click', handleAddClick)
-  }, [translationActions.addEmptyItem])
-
-  const applyFilters = (filters) => setConfig({ filters })
-  const changePage = (page) => setConfig({ page })
+  const { filters, page, applyFilters, setPage } = useConfig()
+  const { isFetching, isLoading, totalCount, translations } = useGetTranslations(filters, page)
+  useAddEmptyListener()
 
   return (
     <div>
       <Filter onSubmit={applyFilters}/>
-      {isLoading
-        ? <LoadingList/>
-
-        : (
-          <List
-            paginationData={config.pagination}
-            changePage={changePage}
-            loading={isFetching}
-          >
-            {translations.map(translation => (
-              <Item
-                key={translation.uuid}
-                translation={translation}
-                removeEmptyItem={translationActions.removeEmptyItem}
-              />
-            ))}
-          </List>
-        )
-      }
+      {isLoading && <LoadingList/>}
+      {!isLoading && (
+        <List pagination={<Paginator
+          currentPage={page}
+          totalCount={totalCount}
+          onChange={setPage}
+          loading={isFetching}/>
+        }>
+          {translations.map(translation => (
+            <Item key={translation.uuid} translation={translation}/>
+          ))}
+        </List>
+      )}
     </div>
   )
 }

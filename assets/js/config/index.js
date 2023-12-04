@@ -14,7 +14,7 @@ const frontendDomains = JSON.parse(container.dataset.frontendDomains || '[]')
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      refetchOnWindowFocus: false,
+      // refetchOnWindowFocus: false,
     }
   }
 })

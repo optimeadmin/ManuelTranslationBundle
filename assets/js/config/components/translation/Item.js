@@ -2,8 +2,10 @@ import React, { useState } from 'react'
 import { Card, Placeholder } from 'react-bootstrap'
 import ItemForm from './ItemForm'
 import ItemText from './ItemText'
+import { useRemoveEmpty } from '../../hooks/useTranslations'
 
-const Item = ({ translation, removeEmptyItem }) => {
+const Item = ({ translation }) => {
+  const removeEmptyItem = useRemoveEmpty()
   const [editing, setEditing] = useState(false)
   const showForm = editing || !translation.id
 

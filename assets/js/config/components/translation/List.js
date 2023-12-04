@@ -1,30 +1,15 @@
 import React from 'react'
 import { LoadingItem } from './Item'
-import Paginator, { LoadingPaginator } from './Paginator'
+import { LoadingPaginator } from './Paginator'
 
-export default function List (props) {
-  const {
-    paginationData,
-    changePage,
-    children,
-    loading = false
-  } = props
-
+export default function List ({ pagination, children }) {
   return (
     <div>
-      <Paginator
-        paginationData={paginationData}
-        onChange={changePage}
-        loading={loading}
-      />
+      {pagination}
 
       {children}
 
-      <Paginator
-        paginationData={paginationData}
-        onChange={changePage}
-        loading={loading}
-      />
+      {pagination}
     </div>
   )
 }
