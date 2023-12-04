@@ -7,7 +7,7 @@ export function useMutateItem () {
   const { paths: { create } } = useContext(GlobalsContext)
   const queryClient = useQueryClient()
 
-  const { isLoading: isMutating, isSuccess, mutateAsync, error: axiosError } = useMutation({
+  const { isPending, isSuccess, mutateAsync, error: axiosError } = useMutation({
     async mutationFn (item) {
       const { code, domain, values } = item
 
@@ -38,5 +38,5 @@ export function useMutateItem () {
     }
   }
 
-  return { save: mutateAsync, isMutating, isSuccess, error }
+  return { save: mutateAsync, isPending, isSuccess, error }
 }

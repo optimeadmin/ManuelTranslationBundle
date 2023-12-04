@@ -23,17 +23,19 @@ const Item = ({ translation }) => {
 
   return (
     <div className={`translation-item mb-2 ${translation.active ? '' : 'inactive'}`}>
-      {showForm
-        ? <ItemForm
+      {showForm && (
+        <ItemForm
           item={translation}
           handleClose={handleCloseFormClick}
         />
-        : <ItemText
+      )}
+      {!showForm && (
+        <ItemText
           item={translation}
           handleEdit={handleEditClick}
           handleEditToggle={handleEditToggle}
         />
-      }
+      )}
     </div>
   )
 }

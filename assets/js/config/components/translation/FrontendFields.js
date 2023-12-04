@@ -21,30 +21,26 @@ const FrontendFields = ({
   return (
     <div className={`row border-top mt-2 pt-2 align-items-center text-muted ${isEdit ? '' : 'opacity-50'}`}>
       <div className="col-md-7 d-flex gap-1 align-items-center">
-        <b>Frontend Domains:</b> {isEdit
-          ? (
-            <FrontendDomainsField
-              values={frontendDomains}
-              selectDomains={handleFrontendDomainsChange}
-            />
-          )
-          : (
-            frontendDomains?.join(', ') || 'NONE'
-          )}
+        <b>Frontend Domains:</b>{' '}
+        {isEdit && (
+          <FrontendDomainsField
+            values={frontendDomains}
+            selectDomains={handleFrontendDomainsChange}
+          />
+        )}
+        {!isEdit && frontendDomains?.join(', ') || 'NONE'}
       </div>
       <div className="col-md-5 d-flex gap-1 align-items-center">
-        <label className="fw-bold" htmlFor={`form-${id}-only-frontend`}>FrontEnd Only:</label> {isEdit
-          ? (
-            <Form.Check
-              name={`form-only-frontend-${id}`}
-              id={`form-${id}-only-frontend`}
-              checked={onlyFrontend}
-              onChange={handleOnlyFrontendChange}
-            />
-          )
-          : (
-            onlyFrontend ? 'Yes' : 'No'
-          )}
+        <label className="fw-bold" htmlFor={`form-${id}-only-frontend`}>FrontEnd Only:</label>{' '}
+        {isEdit && (
+          <Form.Check
+            name={`form-only-frontend-${id}`}
+            id={`form-${id}-only-frontend`}
+            checked={onlyFrontend}
+            onChange={handleOnlyFrontendChange}
+          />
+        )}
+        {!isEdit && (onlyFrontend ? 'Yes' : 'No')}
       </div>
     </div>
   )

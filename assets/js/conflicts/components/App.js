@@ -15,7 +15,7 @@ const buildSelected = (item, type) => {
 
 export default function App ({ defaultItems, endpoint }) {
   const { items } = useGetItems(defaultItems)
-  const { isMutating, save } = useSave(endpoint, items)
+  const { isPending, save } = useSave(endpoint, items)
 
   const [selectedItems, setSelectedItems] = useState([])
 
@@ -73,8 +73,8 @@ export default function App ({ defaultItems, endpoint }) {
           size="lg"
           className="px-4"
           onClick={handleApplyClick}
-          disabled={selectedItemsCount === 0 || isMutating}
-        >Apply {isMutating && <Spinner />}</Button>
+          disabled={selectedItemsCount === 0 || isPending}
+        >Apply {isPending && <Spinner />}</Button>
         <div className="ms-auto d-flex gap-2">
           <Button
             onClick={handleSelectAllFileClick}
@@ -127,7 +127,7 @@ function useGetItems (defaultItems) {
 function useSave (endpoint, items) {
   const queryClient = useQueryClient()
 
-  const { mutateAsync, isLoading: isMutating } = useMutation({
+  const { mutateAsync, isPending } = useMutation({
     async mutationFn (selectedItems) {
       const finished = items.length === selectedItems.length
       const itemsToSend = selectedItems.map(item => ({
@@ -151,6 +151,6 @@ function useSave (endpoint, items) {
 
   return {
     save: mutateAsync,
-    isMutating,
+    isPending,
   }
 }

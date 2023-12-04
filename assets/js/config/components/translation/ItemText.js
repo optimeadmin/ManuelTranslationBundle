@@ -17,13 +17,10 @@ const ItemText = ({ item, handleEdit, handleEditToggle }) => {
             {item.code}
           </div>
           <div className="col-md-4 text-muted text-end">
-            {item.onlyFrontend
-              ? (
-                <span><b>Domains:</b> {item.frontendDomains?.join(', ') ?? 'NONE'}</span>
-              )
-              : (
-                <span><b>Domain:</b> {item.domain}</span>
-              )}
+            <span><b>Domains:</b> {item.onlyFrontend
+              ? item.frontendDomains?.join(', ') ?? 'NONE'
+              : item.domain
+            }</span>
           </div>
           <div className="col-md-3 text-muted text-end">
             <b>Active:</b> {booleanLabel(item.active)}
@@ -40,22 +37,16 @@ const ItemText = ({ item, handleEdit, handleEditToggle }) => {
               </div>
             ))}
 
-            <FrontendFields
-              frontendDomains={item.frontendDomains}
-              onlyFrontend={item.onlyFrontend}
-            />
+            <FrontendFields frontendDomains={item.frontendDomains} onlyFrontend={item.onlyFrontend}/>
           </div>
           <div className="d-grid gap-2 col-md-2 align-items-start">
             <Button variant="outline-secondary" size="sm" onClick={handleEdit}>
-              <Icon icon="pencil-square" />
-                            Edit
+              <Icon icon="pencil-square" /> Edit
             </Button>
           </div>
         </div>
       </Card.Body>
-      <Card.Footer>
-
-      </Card.Footer>
+      <Card.Footer />
     </Card>
   )
 }

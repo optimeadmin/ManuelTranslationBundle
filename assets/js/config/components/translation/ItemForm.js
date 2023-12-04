@@ -22,7 +22,7 @@ const getFormValues = (defaultLocales, item) => {
 const ItemForm = ({ item, handleClose }) => {
   const { booleanLabel, locales: defaultLocales } = useContext(GlobalsContext)
 
-  const { save: saveItem, isLoading } = useMutateItem()
+  const { save: saveItem, isPending } = useMutateItem()
 
   const [formData, setFormData] = useState(() => ({
     code: item.code,
@@ -75,37 +75,33 @@ const ItemForm = ({ item, handleClose }) => {
       <Card.Header role="button">
         <div className="row align-items-center">
           <div className="col-md-5 m-0 d-flex">
-            {isNew
-              ? <Form.Control
+            {isNew && (
+              <Form.Control
                 value={formData.code}
                 onChange={handleCodeChange}
                 size="sm"
                 disabled={!isNew}
               />
-              : (
-                <>
-                  <CopyToClipboard text={item.code} />
-                  {formData.code}
-                </>
-              )
-            }
-            {isLoading && <span className="ms-3">Loading...!</span>}
+            )}
+            {!isNew && (
+              <>
+                <CopyToClipboard text={item.code} />
+                {formData.code}
+              </>
+            )}
+            {isPending && <span className="ms-3">Updating...!</span>}
           </div>
           <div className="col-md-4 text-muted text-end">
             <div className="d-flex align-items-center justify-content-end gap-1">
               <b>Domain: </b>
-              {isNew
-                ? (
-                  <DomainField
-                    value={formData.domain}
-                    disabled={!isNew}
-                    selectDomain={handleDomainChange}
-                  />
-                )
-                : (
-                  formData.domain
-                )
-              }
+              {isNew && (
+                <DomainField
+                  value={formData.domain}
+                  disabled={!isNew}
+                  selectDomain={handleDomainChange}
+                />
+              )}
+              {!isNew && formData.domain}
             </div>
           </div>
           <div className="col-md-3 text-end">
@@ -152,7 +148,7 @@ const ItemForm = ({ item, handleClose }) => {
             )}
           </div>
         </div>
-        {showErrors ? <ItemFormErrors errors={errors} /> : null}
+        {showErrors && <ItemFormErrors errors={errors} />}
       </Card.Body>
     </Card>
   )

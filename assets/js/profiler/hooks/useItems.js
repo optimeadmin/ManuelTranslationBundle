@@ -57,20 +57,9 @@ export default function useItems (defaultItems) {
     setItems(newItems)
   }
 
-  // async function persistItem (id) {
-  //   const itemToPersist = items.find(item => item.id === id)
-  //
-  //   if (!itemToPersist) {
-  //     return
-  //   }
-  //
-  //   await mutate(itemToPersist)
-  // }
-
   return {
     items: items ?? data,
     isLoading,
     updateItem,
-    // persistItem,
   }
 }

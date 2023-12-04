@@ -18,7 +18,7 @@ const useMutateItem = () => {
   const { paths: { api }, addDomain, addFrontendDomain } = useContext(GlobalsContext)
   const queryClient = useQueryClient()
 
-  const { isLoading, mutateAsync } = useMutation({
+  const { isPending, mutateAsync } = useMutation({
     mutationFn: (item) => persistTranslation(api, item),
     async onSuccess ({ data }) {
       const queryKeyFilter = ['translations', 'list']
@@ -38,7 +38,7 @@ const useMutateItem = () => {
 
   return {
     save: mutateAsync,
-    isLoading,
+    isPending,
   }
 }
 

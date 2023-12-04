@@ -8,12 +8,12 @@ const STATUS_PERSISTED = 'persisted'
 
 const persistButtonLabel = (status) => {
   switch (status) {
-  case STATUS_PERSISTING:
-    return 'Persisting...!!!'
-  case STATUS_PERSISTED:
-    return 'DONE'
-  default:
-    return 'Create'
+    case STATUS_PERSISTING:
+      return 'Persisting...!!!'
+    case STATUS_PERSISTED:
+      return 'DONE'
+    default:
+      return 'Create'
   }
 }
 
@@ -21,13 +21,13 @@ export default function Item ({ item }) {
   const parameters = Array.from(Object.keys(item.parameters))
   const valuesMap = Object.keys(item.values)
 
-  const { isMutating, isSuccess, error, save } = useMutateItem()
+  const { isPending, isSuccess, error, save } = useMutateItem()
   const { register, handleSubmit } = useForm({ values: item })
   let status = STATUS_EDITING
 
   if (isSuccess) {
     status = STATUS_PERSISTED
-  } else if (isMutating) {
+  } else if (isPending) {
     status = STATUS_PERSISTING
   } else if (error) {
     status = 'error'
@@ -45,12 +45,12 @@ export default function Item ({ item }) {
 
       <div className="item-values">
         {valuesMap.map(locale => (
-          <LocaleValue key={locale} locale={locale} register={register} isMutating={isMutating}/>
+          <LocaleValue key={locale} locale={locale} register={register} isMutating={isPending}/>
         ))}
       </div>
       <div className="item-actions">
         <div className="btn-container">
-          <button type='submit' disabled={isMutating}>
+          <button type='submit' disabled={isPending}>
             {persistButtonLabel(status)}
           </button>
         </div>
