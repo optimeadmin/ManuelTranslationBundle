@@ -46,9 +46,9 @@ class SyncFromConflicts
         $values = $data['values'] ?? [];
         $frontendDomains = $data['frontendDomains'] ?? [];
         $onlyFrontend = $data['onlyFrontend'] ?? false;
-        $hash = $data['hash'] ?? '';
         $active = (bool)$data['active'];
         $lastChanged = TranslationLastEdit::from($data['applyFor']);
+        $hash = $lastChanged === TranslationLastEdit::FILE ? ($data['hash'] ?? '') : $translation->getHash();
 
         $this->synchronizer->updateTranslation(
             $translation,
