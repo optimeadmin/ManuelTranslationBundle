@@ -48,7 +48,7 @@ class DoctrineLoader implements LoaderInterface
             try {
                 $this->logger?->warning('Intentando cargar las traducciones desde el backup de traducciones');
 
-                $translations = $this->backupTranslationRepository->getActiveTranslations();
+                $translations = $this->backupRepository->getActiveTranslations();
             } catch (\Throwable $e) {
                 $this->logger?->warning('No se pudo obtener las traducciones desde el backup', [
                     'error' => $e->getMessage(),
