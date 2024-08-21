@@ -37,7 +37,12 @@ services:
 
     manuel_translation.translations_doctrine_loader:
         class: ManuelAguirre\Bundle\TranslationBundle\Translation\Loader\DoctrineLoader
-        arguments: ["@manuel_translation.translations_repository", "%manuel_translation.filename_template%"]
+        arguments: [
+            "@manuel_translation.translations_repository",
+            "@manuel_translation.translations_repository.backup",
+            "%manuel_translation.filename_template%",
+            "@?logger",
+        ]
         tags:
             - { name: translation.loader, alias: doctrine }
 
