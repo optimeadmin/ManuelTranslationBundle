@@ -10,11 +10,9 @@
 
 namespace ManuelAguirre\Bundle\TranslationBundle\Doctrine\Listener;
 
-use Doctrine\ORM\Event\LifecycleEventArgs;
 use ManuelAguirre\Bundle\TranslationBundle\Entity\Translation;
 use ManuelAguirre\Bundle\TranslationBundle\Translation\Dumper\CataloguesDumper;
 use Symfony\Component\DependencyInjection\Attribute\When;
-use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
 /**
  * @author maguirre <maguirre@developerplace.com>
@@ -31,24 +29,32 @@ class DumpFilesListener
     {
     }
 
-    public function postPersist(LifecycleEventArgs $event)
+    public function postPersist($event): void
     {
         $this->onTranslationSaved($event);
     }
 
-    public function postUpdate(LifecycleEventArgs $event)
+    public function postUpdate($event): void
     {
         $this->onTranslationSaved($event);
     }
 
-    public function onTranslationSaved(LifecycleEventArgs $event)
+    public function onTranslationSaved($event): void
     {
-        if ($event->getEntity() instanceof Translation) {
+        if (method_exists($event, 'getObject')) {
+            $entity = $event->getObject();
+        } elseif (method_exists($event, 'getEntity')) {
+            $entity = $event->getEntity();
+        } else {
+            return;
+        }
+
+        if ($entity instanceof Translation) {
             $this->translationChanged = true;
         }
     }
 
-    public function postFlush()
+    public function postFlush(): void
     {
         if ($this->translationChanged) {
             $this->cataloguesDumper->dump();

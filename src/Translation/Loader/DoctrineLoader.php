@@ -15,6 +15,7 @@ use ManuelAguirre\Bundle\TranslationBundle\TranslationRepository;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Translation\Loader\LoaderInterface;
 use Symfony\Component\Translation\MessageCatalogue;
 
@@ -27,6 +28,8 @@ class DoctrineLoader implements LoaderInterface
     function __construct(
         private readonly TranslationRepository $translationRepository,
         private readonly BackupTranslationRepository $backupRepository,
+        private readonly Filesystem $filesystem,
+        private readonly string $cacheDir,
         private readonly ?LoggerInterface $logger,
     ) {
     }
@@ -37,25 +40,18 @@ class DoctrineLoader implements LoaderInterface
         // Ya probé con directoryResource y falló porque llegó un archivo messages.en.doctrine.
         $catalogue->addResource(new FileResource($resource));
 
-        try {
-            $translations = $this->translationRepository->getActiveTranslations();
-        } catch (\Throwable $e) {
-            $this->logger?->warning('No se pudo obtener las traducciones desde la base de datos', [
-                'error' => $e->getMessage(),
-                'error_type' => get_class($e),
-            ]);
-
+        if (!$this->isLoadedFromBackup()) {
+            $translations = $this->loadFromBackup();
+        } else {
             try {
-                $this->logger?->warning('Intentando cargar las traducciones desde el backup de traducciones');
-
-                $translations = $this->backupRepository->getActiveTranslations();
+                $translations = $this->translationRepository->getActiveTranslations();
             } catch (\Throwable $e) {
-                $this->logger?->warning('No se pudo obtener las traducciones desde el backup', [
+                $this->logger?->warning('No se pudo obtener las traducciones desde la base de datos', [
                     'error' => $e->getMessage(),
                     'error_type' => get_class($e),
                 ]);
 
-                return $catalogue;
+                $translations = $this->loadFromBackup();
             }
         }
 
@@ -67,5 +63,32 @@ class DoctrineLoader implements LoaderInterface
         }
 
         return $catalogue;
+    }
+
+    private function isLoadedFromBackup(): bool
+    {
+        return $this->filesystem->exists($this->getLoadedBackupFilename());
+    }
+
+    private function loadFromBackup(): array
+    {
+        try {
+            $this->filesystem->dumpFile($this->getLoadedBackupFilename(), date('Y-m-d H:i:s'));
+            $this->logger?->warning('Intentando cargar las traducciones desde el backup de traducciones');
+
+            return $this->backupRepository->getActiveTranslations();
+        } catch (\Throwable $e) {
+            $this->logger?->warning('No se pudo obtener las traducciones desde el backup', [
+                'error' => $e->getMessage(),
+                'error_type' => get_class($e),
+            ]);
+
+            return [];
+        }
+    }
+
+    private function getLoadedBackupFilename(): string
+    {
+        return $this->cacheDir.'/__translations_loaded_from_backup';
     }
 }

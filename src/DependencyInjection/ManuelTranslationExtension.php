@@ -7,6 +7,7 @@ use ManuelAguirre\Bundle\TranslationBundle\Doctrine\Listener\ChangeTableNameList
 use ManuelAguirre\Bundle\TranslationBundle\Translation\Loader\DoctrineLoader;
 use ManuelAguirre\Bundle\TranslationBundle\Twig\Extension\ParamsExtension;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\Config\Resource\DirectoryResource;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\DependencyInjection\Reference;
@@ -29,10 +30,11 @@ class ManuelTranslationExtension extends Extension
 
         $loader = new Loader\YamlFileLoader(
             $container,
-            new FileLocator(__DIR__ . '/../../config'),
+            new FileLocator(__DIR__.'/../../config'),
             $container->getParameter('kernel.environment'),
         );
         $loader->load('services.yaml');
+//        $container->addResource(new DirectoryResource(__DIR__.'/../'));
 
         $container->setParameter('manuel_translation.locales', $config['locales']);
         $container->setParameter('manuel_translation.catalogues_path', $config['catalogues_path']);

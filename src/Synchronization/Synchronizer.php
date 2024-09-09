@@ -10,7 +10,6 @@
 
 namespace ManuelAguirre\Bundle\TranslationBundle\Synchronization;
 
-use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManagerInterface;
 use ManuelAguirre\Bundle\TranslationBundle\Entity\Translation;
 use ManuelAguirre\Bundle\TranslationBundle\Entity\TranslationRepository;
@@ -50,7 +49,7 @@ class Synchronizer
         $newHash = $this->generateHashNumber();
 
         if (null === $path) {
-            $path = rtrim($this->backupDir, '/') . '/translations.php';
+            $path = rtrim($this->backupDir, '/').'/translations.php';
         }
 
         $translations = $this->translationRepository->getAll();
@@ -78,7 +77,7 @@ class Synchronizer
             ksort($export['translations'][$domain]);
         }
 
-        $output = "<?php\n\nreturn " . var_export($export, true) . ";\n";
+        $output = "<?php\n\nreturn ".var_export($export, true).";\n";
 
         $this->filesystem->dumpFile($path, $output);
         $this->updateLocalHash($newHash);
@@ -246,7 +245,7 @@ class Synchronizer
 
     public function getFileData(): array
     {
-        $path = rtrim($this->backupDir, '/') . '/translations.php';
+        $path = rtrim($this->backupDir, '/').'/translations.php';
 
         if (is_file($path)) {
             return require $path;
@@ -296,14 +295,14 @@ class Synchronizer
 
     public function updateLocalHash(string $hash): void
     {
-        $filename = rtrim($this->cacheDir, '/') . '/manuel_translations_hash';
+        $filename = rtrim($this->cacheDir, '/').'/manuel_translations_hash';
 
         $this->filesystem->dumpFile($filename, $hash);
     }
 
     protected function getLocalHash(): string
     {
-        $filename = rtrim($this->cacheDir, '/') . '/manuel_translations_hash';
+        $filename = rtrim($this->cacheDir, '/').'/manuel_translations_hash';
 
         if (is_file($filename)) {
             return file_get_contents($filename);
@@ -316,10 +315,11 @@ class Synchronizer
 
     protected function getFileHash(): string|false
     {
-        $path = rtrim($this->backupDir, '/') . '/translations.php';
+        $path = rtrim($this->backupDir, '/').'/translations.php';
 
         if (is_file($path)) {
             $data = require $path;
+
             return $data['hash'];
         } else {
             return false;
