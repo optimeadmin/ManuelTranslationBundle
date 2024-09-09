@@ -40,7 +40,8 @@ services:
         arguments: [
             "@manuel_translation.translations_repository",
             "@manuel_translation.translations_repository.backup",
-            "%manuel_translation.filename_template%",
+            "@filesystem",
+            "%kernel.cache_dir%",
             "@?logger",
         ]
         tags:

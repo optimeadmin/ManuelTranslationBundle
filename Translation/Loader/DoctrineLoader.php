@@ -13,6 +13,7 @@ namespace ManuelAguirre\Bundle\TranslationBundle\Translation\Loader;
 use ManuelAguirre\Bundle\TranslationBundle\TranslationRepository;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Config\Resource\FileResource;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Translation\Exception\InvalidResourceException;
 use Symfony\Component\Translation\Exception\NotFoundResourceException;
 use Symfony\Component\Translation\Loader\LoaderInterface;
@@ -32,7 +33,14 @@ class DoctrineLoader implements LoaderInterface
      * @var TranslationRepository
      */
     protected $backupTranslationRepository;
-    protected $fileTemplate;
+    /**
+     * @var Filesystem
+     */
+    private $filesystem;
+    /**
+     * @var string
+     */
+    private $cacheDir;
     /**
      * @var LoggerInterface|null
      */
@@ -41,12 +49,14 @@ class DoctrineLoader implements LoaderInterface
     public function __construct(
         TranslationRepository $translationRepository,
         TranslationRepository $backupTranslationRepository,
-        string $fileTemplate,
+        Filesystem $filesystem,
+        string $cacheDir,
         ?LoggerInterface $logger = null
     ) {
         $this->translationRepository = $translationRepository;
         $this->backupTranslationRepository = $backupTranslationRepository;
-        $this->fileTemplate = $fileTemplate;
+        $this->filesystem = $filesystem;
+        $this->cacheDir = $cacheDir;
         $this->logger = $logger;
     }
 
@@ -69,31 +79,20 @@ class DoctrineLoader implements LoaderInterface
         $catalogue = new MessageCatalogue($locale);
         $catalogue->addResource(new FileResource($resource));
 
-        try {
-            $translations = $this->translationRepository->getActiveTranslations();
-        } catch (\Throwable $e) {
-            if ($this->logger) {
-                $this->logger->warning('No se pudo obtener las traducciones desde la base de datos', [
-                    'error' => $e->getMessage(),
-                    'error_type' => get_class($e),
-                ]);
-            }
-
+        if (!$this->isLoadedFromBackup()) {
+            $translations = $this->loadFromBackup();
+        } else {
             try {
-                if ($this->logger) {
-                    $this->logger->warning('Intentando cargar las traducciones desde el backup de traducciones');
-                }
-
-                $translations = $this->backupTranslationRepository->getActiveTranslations();
+                $translations = $this->translationRepository->getActiveTranslations();
             } catch (\Throwable $e) {
                 if ($this->logger) {
-                    $this->logger->warning('No se pudo obtener las traducciones desde el backup', [
+                    $this->logger->warning('No se pudo obtener las traducciones desde la base de datos', [
                         'error' => $e->getMessage(),
                         'error_type' => get_class($e),
                     ]);
                 }
 
-                return $catalogue;
+                $translations = $this->loadFromBackup();
             }
         }
 
@@ -105,5 +104,36 @@ class DoctrineLoader implements LoaderInterface
         }
 
         return $catalogue;
+    }
+
+    private function isLoadedFromBackup(): bool
+    {
+        return $this->filesystem->exists($this->getLoadedBackupFilename());
+    }
+
+    private function loadFromBackup(): array
+    {
+        try {
+            $this->filesystem->dumpFile($this->getLoadedBackupFilename(), date('Y-m-d H:i:s'));
+            if ($this->logger) {
+                $this->logger->debug('Intentando cargar las traducciones desde el backup de traducciones');
+            }
+
+            return $this->backupTranslationRepository->getActiveTranslations();
+        } catch (\Throwable $e) {
+            if ($this->logger) {
+                $this->logger->warning('No se pudo obtener las traducciones desde el backup', [
+                    'error' => $e->getMessage(),
+                    'error_type' => get_class($e),
+                ]);
+            }
+
+            return [];
+        }
+    }
+
+    private function getLoadedBackupFilename(): string
+    {
+        return $this->cacheDir.'/__translations_loaded_from_backup';
     }
 }
