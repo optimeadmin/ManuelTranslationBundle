@@ -38,10 +38,11 @@ class BackupTranslationRepository implements TranslationRepository
 
         foreach ($data['translations'] as $domain => $messages) {
             foreach ($messages as $code => $item) {
-                $translations[$code] = [
+                $translations[] = [
                     'code' => $code,
                     'domain' => $domain,
                     'values' => $item['values'],
+                    'hash' => $item['hash'],
                 ];
             }
         }
