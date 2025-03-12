@@ -57,8 +57,8 @@ class TranslationRepository extends ServiceEntityRepository implements Repositor
             $conditions = [];
 
             foreach ($frontendDomains as $index => $fDomain) {
-                $param = "f_domain_" . $index;
-                $query->setParameter($param, '%' . $fDomain . '%');
+                $param = "f_domain_".$index;
+                $query->setParameter($param, '%'.$fDomain.'%');
                 $conditions[] = "translation.frontendDomains LIKE :{$param}";
             }
 
@@ -192,6 +192,20 @@ class TranslationRepository extends ServiceEntityRepository implements Repositor
                 ->setParameter("domain_{$index}", $item['domain'] ?? null);
         }
 
+
+        return $query->getQuery()->getArrayResult();
+    }
+
+    public function activesByFrontendDomains(array $frontendDomains = null): array
+    {
+        $query = $this
+            ->createQueryBuilder('translation')
+            ->andWhere('translation.active = true');
+
+        if ($frontendDomains) {
+            $query->andWhere('translation.frontendDomains IN (:domains)');
+            $query->setParameter('domains', $frontendDomains);
+        }
 
         return $query->getQuery()->getArrayResult();
     }

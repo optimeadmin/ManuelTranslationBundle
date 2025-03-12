@@ -41,7 +41,7 @@ class TranslationsProvider
 
     public function byLocaleAndFrontendDomains($locale, $domains): array
     {
-        $items = $this->repository->getAll(null, null, (array)$domains);
+        $items = $this->repository->activesByFrontendDomains((array)$domains);
         $translations = [];
 
         foreach ($items as $item) {
