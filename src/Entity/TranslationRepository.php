@@ -203,8 +203,27 @@ class TranslationRepository extends ServiceEntityRepository implements Repositor
             ->andWhere('translation.active = true');
 
         if ($frontendDomains) {
-            $query->andWhere('translation.frontendDomains IN (:domains)');
-            $query->setParameter('domains', $frontendDomains);
+            $conditions = [];
+
+            foreach ($frontendDomains as $index => $fDomain) {
+                $param = "f_domain_".$index;
+                $query->setParameter($param, $fDomain);
+                $conditions[] = "translation.frontendDomains = :{$param}";
+
+                $param = "f_domain_like".$index;
+                $query->setParameter($param, '%,'.$fDomain.',%');
+                $conditions[] = "translation.frontendDomains LIKE :{$param}";
+
+                $param = "f_domain_start_".$index;
+                $query->setParameter($param, ''.$fDomain.',%');
+                $conditions[] = "translation.frontendDomains LIKE :{$param}";
+
+                $param = "f_domain_final_".$index;
+                $query->setParameter($param, '%,'.$fDomain.'');
+                $conditions[] = "translation.frontendDomains LIKE :{$param}";
+            }
+
+            $query->andWhere($query->expr()->orX(...$conditions));
         }
 
         return $query->getQuery()->getArrayResult();
