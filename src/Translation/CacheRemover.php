@@ -6,6 +6,8 @@
 
 namespace ManuelAguirre\Bundle\TranslationBundle\Translation;
 
+use ManuelAguirre\Bundle\TranslationBundle\Event\CacheRemovedEvent;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -16,28 +18,26 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 class CacheRemover
 {
-    /**
-     * @var Filesystem
-     */
-    private $filesystem;
-    private $cacheDir;
 
-    public function __construct(Filesystem $filesystem, $cacheDir)
-    {
-        $this->filesystem = $filesystem;
-        $this->cacheDir = $cacheDir;
+    public function __construct(
+        private readonly Filesystem $filesystem,
+        private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly string $cacheDir,
+    ) {
     }
 
-    public function clear()
+    public function clear(): ?bool
     {
         $path = $this->getPath();
 
         if (!$this->filesystem->exists($path)) {
-            return;
+            return null;
         }
 
         try {
             $this->filesystem->remove($path);
+
+            $this->eventDispatcher->dispatch(new CacheRemovedEvent());
         } catch (IOException $ex) {
             // no hacer nada
             return false;
@@ -46,7 +46,7 @@ class CacheRemover
         return true;
     }
 
-    private function getPath()
+    private function getPath(): string
     {
         return rtrim($this->cacheDir, '/').'/translations/';
     }
