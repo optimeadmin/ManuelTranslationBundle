@@ -14,6 +14,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use ManuelAguirre\Bundle\TranslationBundle\Entity\Translation;
 use ManuelAguirre\Bundle\TranslationBundle\Entity\TranslationRepository;
 use ManuelAguirre\Bundle\TranslationBundle\Model\TranslationLastEdit;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use function array_diff;
 use function sort;
@@ -34,6 +36,7 @@ class Synchronizer
         private string $cacheDir,
         private array $locales,
         private string $backupDir,
+        private ?LoggerInterface $logger = null,
     ) {
     }
 
@@ -79,7 +82,11 @@ class Synchronizer
 
         $output = "<?php\n\nreturn ".var_export($export, true).";\n";
 
-        $this->filesystem->dumpFile($path, $output);
+        try {
+            $this->filesystem->dumpFile($path, $output);
+        } catch (IOExceptionInterface $exception) {
+            $this->logger?->error($exception->getMessage());
+        }
         $this->updateLocalHash($newHash);
 
         return true;
@@ -297,7 +304,11 @@ class Synchronizer
     {
         $filename = rtrim($this->cacheDir, '/').'/manuel_translations_hash';
 
-        $this->filesystem->dumpFile($filename, $hash);
+        try {
+            $this->filesystem->dumpFile($filename, $hash);
+        } catch (IOExceptionInterface $exception) {
+            $this->logger?->error($exception->getMessage());
+        }
     }
 
     protected function getLocalHash(): string
